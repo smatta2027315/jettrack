@@ -5,8 +5,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 export default function Register({ onSwitch }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
+  const [first_name, setFirstname] = useState('');
+  const [last_name, setLastname] = useState('');
   const [error, setError] = useState(null);
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ export default function Register({ onSwitch }) {
     e.preventDefault();
     setError(null);
     try {
-      await register({ email, password, firstname, lastname });
+      await register({ email, password, first_name, last_name });
       const dest = location.state?.from || '/';
       navigate(dest, { replace: true });
     } catch (err) {
@@ -28,8 +28,8 @@ export default function Register({ onSwitch }) {
     <div className="auth-box">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
-        <input value={firstname} onChange={e=>setFirstname(e.target.value)} placeholder="First name" />
-        <input value={lastname} onChange={e=>setLastname(e.target.value)} placeholder="Last name" />
+        <input value={first_name} onChange={e=>setFirstname(e.target.value)} placeholder="First name" />
+        <input value={last_name} onChange={e=>setLastname(e.target.value)} placeholder="Last name" />
         <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" />
         <input value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password" type="password" />
         <button type="submit">Register</button>

@@ -3,7 +3,7 @@ const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME || 'fullstack',
+  process.env.DB_NAME || 'jettrack',
   process.env.DB_USER || 'root',
   process.env.DB_PASS || 'root',
   {

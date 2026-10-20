@@ -8,10 +8,10 @@ app.use(express.urlencoded({ extended: true }));
 
 
 
-const postsFeatures = require('./features/posts');
+//const postsFeatures = require('./features/posts');
 const authFeatures = require('./features/auth');
 
-app.use('/api', postsFeatures);
+//app.use('/api', postsFeatures);
 app.use('/api/auth', authFeatures);
 
 // Start the server

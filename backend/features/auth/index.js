@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 
 const db = require('../../models');
-const User = db.users;
+const User = db.user;
 
 const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret';
 
@@ -20,7 +20,7 @@ function setTokenCookie(res, token) {
 }
 
 router.post('/register', async (req, res) => {
-  const { email, password, firstname, lastname } = req.body;
+  const { email, password, first_name, last_name } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
   const existing = await User.findOne({ where: { email } });
@@ -28,10 +28,10 @@ router.post('/register', async (req, res) => {
 
   const hashed = await bcrypt.hash(password, 10);
   try {
-    const user = await User.create({ id: uuidv4(), email, password: hashed, firstname, lastname });
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+    const user = await User.create({  email, password_hash: hashed, first_name, last_name });
+    const token = jwt.sign({ userid: user.userid, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
     setTokenCookie(res, token);
-    return res.status(201).json({ id: user.id, email: user.email, firstname: user.firstname, lastname: user.lastname });
+    return res.status(201).json({ id: user.id, email: user.email, first_name: user.first_name, last_name: user.last_name });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'Server error' });
@@ -45,18 +45,18 @@ router.post('/login', async (req, res) => {
   const user = await User.findOne({ where: { email } });
   if (!user) return res.status(401).json({ error: 'Invalid credentials' });
 
-  const match = await bcrypt.compare(password, user.password || '');
+  const match = await bcrypt.compare(password, user.password_hash || '');
   if (!match) return res.status(401).json({ error: 'Invalid credentials' });
 
-  const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+  const token = jwt.sign({ userid: user.userid, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
   setTokenCookie(res, token);
-  return res.json({ user: { id: user.id, email: user.email, firstname: user.firstname, lastname: user.lastname } });
+  return res.json({ user: { userid: user.userid, email: user.email, first_name: user.first_name, last_name: user.last_name } });
 });
 
 // Return current user based on token cookie (auth middleware will populate req.user)
 const auth = require('../../middleware/auth');
 router.get('/me', auth, async (req, res) => {
-  const user = await User.findByPk(req.user.id, { attributes: ['id','email','firstname','lastname'] });
+  const user = await User.findByPk(req.user.id, { attributes: ['id','email','first_name','last_name'] });
   if (!user) return res.status(404).json({ error: 'User not found' });
   return res.json({ user });
 });

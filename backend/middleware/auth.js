@@ -26,7 +26,7 @@ module.exports = async function (req, res, next) {
 
   try {
     const payload = jwt.verify(token, JWT_SECRET);
-    const user = await db.users.findByPk(payload.id);
+    const user = await db.user.findByPk(payload.id);
     if (!user) return res.status(401).json({ error: 'Invalid token' });
     req.user = { id: user.id, email: user.email };
     next();
