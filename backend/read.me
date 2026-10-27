@@ -23,7 +23,761 @@ CREATE TABLE posts (
         ON DELETE SET NULL
         ON UPDATE RESTRICT
 );
+_______________________________________________________________________________________________________
+//THE PLAN (Next Steps):
+jet-track/
+├── backend/
+│   ├── models/
+│   ├── middleware/
+│   ├── routes/
+│   └── server.js
+│
+└── frontend/
+    └── src/
+        ├── App.jsx
+        ├── App.css
+        ├── components/
+        │   └── ProtectedRoute.jsx
+        └── pages/
+            ├── Login.jsx
+            ├── CadetDashboard.jsx
+            ├── CadetLeaderDashboard.jsx
+            └── InstructorDashboard.jsx
+_________________________________________________________________________________________________________
+STEP 1: Istall React Router --> npm install react-router-dom
 
+STEP 2: Input this into App.jsx ---> 
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
+import Login from "./pages/Login";
+import CadetDashboard from "./pages/CadetDashboard";
+import CadetLeaderDashboard from "./pages/CadetLeaderDashboard";
+import InstructorDashboard from "./pages/InstructorDashboard";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Public login page */}
+        <Route path="/login" element={<Login />} />
+
+        {/* Cadet Dashboard */}
+        <Route
+          path="/cadet-dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["Cadet"]}>
+              <CadetDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Cadet Leader Dashboard */}
+        <Route
+          path="/cadet-leader-dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["Cadet Leader"]}>
+              <CadetLeaderDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Instructor Dashboard */}
+        <Route
+          path="/instructor-dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["Instructor"]}>
+              <InstructorDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Unknown URLs return to login */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+_________________________________________________________________________________________________________
+STEP 3: Input into ---> src/components/ProtectedRoute.jsx
+import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+
+export default function ProtectedRoute({
+  children,
+  allowedRoles,
+}) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function checkSession() {
+      try {
+        const response = await fetch("/api/auth/me", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          if (!cancelled) {
+            setError(true);
+          }
+          return;
+        }
+
+        const data = await response.json();
+
+        if (!cancelled) {
+          setUser(data.user);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(true);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    checkSession();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (loading) {
+    return <p>Loading JET TRACK...</p>;
+  }
+
+  if (error || !user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!allowedRoles.includes(user.role)) {
+    // Redirect users to their own dashboard.
+    switch (user.role) {
+      case "Instructor":
+        return (
+          <Navigate to="/instructor-dashboard" replace />
+        );
+
+      case "Cadet Leader":
+        return (
+          <Navigate to="/cadet-leader-dashboard" replace />
+        );
+
+      case "Cadet":
+        return <Navigate to="/cadet-dashboard" replace />;
+
+      default:
+        return <Navigate to="/login" replace />;
+    }
+  }
+
+  return children;
+}
+_________________________________________________________________________________________________________
+STEP 4: Send user's credentials to your existing backend & create src/pages/Login.jsx:
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+export default function Login() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  function getDashboardPath(role) {
+    switch (role) {
+      case "Instructor":
+        return "/instructor-dashboard";
+
+      case "Cadet Leader":
+        return "/cadet-leader-dashboard";
+
+      case "Cadet":
+        return "/cadet-dashboard";
+
+      default:
+        return null;
+    }
+  }
+
+  async function handleLogin(event) {
+    event.preventDefault();
+
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(
+          data.error || "Unable to log in. Please try again."
+        );
+        return;
+      }
+
+      const dashboardPath = getDashboardPath(data.user.role);
+
+      if (!dashboardPath) {
+        setError("Your account does not have a valid role.");
+        return;
+      }
+
+      navigate(dashboardPath, { replace: true });
+    } catch (err) {
+      setError(
+        "Unable to connect to JET TRACK. Check that the server is running."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main className="login-page">
+      <section className="login-card">
+        <h1>JET TRACK</h1>
+
+        <p>
+          Your path. Your Potential. Our Mission.
+        </p>
+
+        <h2>Sign In</h2>
+
+        <form onSubmit={handleLogin}>
+          <label htmlFor="email">Email Address</label>
+
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            autoComplete="username"
+            required
+          />
+
+          <label htmlFor="password">Password</label>
+
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            autoComplete="current-password"
+            required
+          />
+
+          {error && (
+            <p className="error-message" role="alert">
+              {error}
+            </p>
+          )}
+
+          <button type="submit" disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+        </form>
+
+        <p className="login-footer">
+          Integrity - Service - Excellence
+        </p>
+      </section>
+    </main>
+  );
+}
+_________________________________________________________________________________________________________
+STEP 5: Creat CADET Dashboard - src/pages/CadetDashboard.jsx
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+export default function CadetDashboard() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/auth/me", {
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Session expired");
+        }
+
+        return response.json();
+      })
+      .then((data) => setUser(data.user))
+      .catch(() => navigate("/login", { replace: true }));
+  }, [navigate]);
+
+  async function handleLogout() {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } finally {
+      navigate("/login", { replace: true });
+    }
+  }
+
+  if (!user) {
+    return <p>Loading Cadet Dashboard...</p>;
+  }
+
+  return (
+    <div className="dashboard">
+      <aside className="sidebar">
+        <h2>JET TRACK</h2>
+
+        <p>Cadet Portal</p>
+
+        <nav>
+          <a href="#overview">Dashboard</a>
+          <a href="#profile">My Profile</a>
+          <a href="#fitness">Fitness Records</a>
+          <a href="#service">Service Hours</a>
+          <a href="#awards">Awards</a>
+          <a href="#promotions">Promotions</a>
+          <a href="#events">Events</a>
+        </nav>
+
+        <button onClick={handleLogout}>Log Out</button>
+      </aside>
+
+      <main className="dashboard-content">
+        <header className="dashboard-header" id="overview">
+          <div>
+            <h1>Cadet Dashboard</h1>
+
+            <p>
+              Welcome back, {user.first_name}!
+            </p>
+          </div>
+
+          <span className="role-badge">Cadet</span>
+        </header>
+
+        <section className="dashboard-grid">
+          <article className="dashboard-card" id="profile">
+            <h3>My Profile</h3>
+            <p>View your personal and cadet information.</p>
+            <p>
+              <strong>Name:</strong>{" "}
+              {user.first_name} {user.last_name}
+            </p>
+            <p>
+              <strong>Email:</strong> {user.email}
+            </p>
+          </article>
+
+          <article className="dashboard-card" id="fitness">
+            <h3>Fitness Records</h3>
+            <p>Review your fitness assessment results.</p>
+          </article>
+
+          <article className="dashboard-card" id="service">
+            <h3>Service Hours</h3>
+            <p>Track your community service contributions.</p>
+          </article>
+
+          <article className="dashboard-card" id="awards">
+            <h3>Awards</h3>
+            <p>View your earned awards and decorations.</p>
+          </article>
+
+          <article className="dashboard-card" id="promotions">
+            <h3>Promotions</h3>
+            <p>Review your promotion history.</p>
+          </article>
+
+          <article className="dashboard-card" id="events">
+            <h3>Events</h3>
+            <p>Explore unit events and activities.</p>
+          </article>
+        </section>
+      </main>
+    </div>
+  );
+}
+_________________________________________________________________________________________________________
+STEP 6: Create the Cadet Leader Dashboard - src/pages/CadetLeaderDashboard.jsx
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+export default function CadetLeaderDashboard() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/auth/me", {
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Session expired");
+        }
+
+        return response.json();
+      })
+      .then((data) => setUser(data.user))
+      .catch(() => navigate("/login", { replace: true }));
+  }, [navigate]);
+
+  async function handleLogout() {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } finally {
+      navigate("/login", { replace: true });
+    }
+  }
+
+  if (!user) {
+    return <p>Loading Cadet Leader Dashboard...</p>;
+  }
+
+  return (
+    <div className="dashboard">
+      <aside className="sidebar">
+        <h2>JET TRACK</h2>
+
+        <p>Leadership Portal</p>
+
+        <nav>
+          <a href="#overview">Dashboard</a>
+          <a href="#profile">My Profile</a>
+          <a href="#cadets">Cadet Records</a>
+          <a href="#events">Event Coordination</a>
+          <a href="#service">Service Activities</a>
+          <a href="#fitness">Fitness Overview</a>
+        </nav>
+
+        <button onClick={handleLogout}>Log Out</button>
+      </aside>
+
+      <main className="dashboard-content">
+        <header className="dashboard-header" id="overview">
+          <div>
+            <h1>Cadet Leader Dashboard</h1>
+
+            <p>
+              Welcome back, {user.first_name}!
+            </p>
+          </div>
+
+          <span className="role-badge">Cadet Leader</span>
+        </header>
+
+        <section className="dashboard-grid">
+          <article className="dashboard-card" id="profile">
+            <h3>My Profile</h3>
+            <p>View your personal information.</p>
+            <p>
+              <strong>Name:</strong>{" "}
+              {user.first_name} {user.last_name}
+            </p>
+          </article>
+
+          <article className="dashboard-card" id="cadets">
+            <h3>Cadet Records</h3>
+            <p>
+              Access cadet information permitted for your role.
+            </p>
+          </article>
+
+          <article className="dashboard-card" id="events">
+            <h3>Event Coordination</h3>
+            <p>Review unit events and assist with coordination.</p>
+          </article>
+
+          <article className="dashboard-card" id="service">
+            <h3>Service Activities</h3>
+            <p>Review service activities and participation.</p>
+          </article>
+
+          <article className="dashboard-card" id="fitness">
+            <h3>Fitness Overview</h3>
+            <p>Review fitness information you are authorized to access.</p>
+          </article>
+        </section>
+      </main>
+    </div>
+  );
+}
+_________________________________________________________________________________________________________
+STEP 7: Create the Instructor Dashboard - src/pages/InstructorDashboard.jsx
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+export default function InstructorDashboard() {
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState(null);
+  const [pendingUsers, setPendingUsers] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  async function loadDashboard() {
+    setError("");
+
+    try {
+      const [meResponse, pendingResponse] = await Promise.all([
+        fetch("/api/auth/me", {
+          credentials: "include",
+        }),
+        fetch("/api/auth/pending", {
+          credentials: "include",
+        }),
+      ]);
+
+      if (meResponse.status === 401 || meResponse.status === 403) {
+        navigate("/login", { replace: true });
+        return;
+      }
+
+      if (!meResponse.ok) {
+        throw new Error("Unable to load your account.");
+      }
+
+      const meData = await meResponse.json();
+      setUser(meData.user);
+
+      if (!pendingResponse.ok) {
+        throw new Error("Unable to load pending accounts.");
+      }
+
+      const pendingData = await pendingResponse.json();
+      setPendingUsers(pendingData.users || []);
+    } catch (err) {
+      setError(err.message || "Unable to load dashboard.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadDashboard();
+  }, []);
+
+  async function approveAccount(userID, role) {
+    setError("");
+
+    try {
+      const response = await fetch(
+        `/api/auth/approve/${userID}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ role }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Unable to approve account."
+        );
+      }
+
+      // Refresh the pending-account list.
+      await loadDashboard();
+    } catch (err) {
+      setError(err.message || "Approval failed.");
+    }
+  }
+
+  async function handleLogout() {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } finally {
+      navigate("/login", { replace: true });
+    }
+  }
+
+  if (loading) {
+    return <p>Loading Instructor Dashboard...</p>;
+  }
+
+  if (!user) {
+    return (
+      <main className="dashboard-content">
+        <p>{error || "Unable to load Instructor Dashboard."}</p>
+        <button onClick={handleLogout}>Return to Login</button>
+      </main>
+    );
+  }
+
+  return (
+    <div className="dashboard">
+      <aside className="sidebar">
+        <h2>JET TRACK</h2>
+
+        <p>Instructor Portal</p>
+
+        <nav>
+          <a href="#overview">Dashboard</a>
+          <a href="#approvals">Account Approvals</a>
+          <a href="#cadets">Manage Cadets</a>
+          <a href="#fitness">Fitness Records</a>
+          <a href="#events">Manage Events</a>
+          <a href="#service">Service Hours</a>
+          <a href="#awards">Awards and Promotions</a>
+        </nav>
+
+        <button onClick={handleLogout}>Log Out</button>
+      </aside>
+
+      <main className="dashboard-content">
+        <header className="dashboard-header" id="overview">
+          <div>
+            <h1>Instructor Dashboard</h1>
+
+            <p>
+              Welcome back, {user.first_name}!
+            </p>
+          </div>
+
+          <span className="role-badge">Instructor</span>
+        </header>
+
+        {error && (
+          <p className="error-message" role="alert">
+            {error}
+          </p>
+        )}
+
+        <section className="dashboard-grid">
+          <article className="dashboard-card" id="cadets">
+            <h3>Manage Cadets</h3>
+            <p>
+              View and manage cadet profiles and records.
+            </p>
+          </article>
+
+          <article className="dashboard-card" id="fitness">
+            <h3>Fitness Records</h3>
+            <p>Enter and update fitness assessment results.</p>
+          </article>
+
+          <article className="dashboard-card" id="events">
+            <h3>Manage Events</h3>
+            <p>Create and update unit events.</p>
+          </article>
+
+          <article className="dashboard-card" id="service">
+            <h3>Service Hours</h3>
+            <p>Review and maintain service-hour records.</p>
+          </article>
+
+          <article className="dashboard-card" id="awards">
+            <h3>Awards and Promotions</h3>
+            <p>Maintain awards and promotion records.</p>
+          </article>
+        </section>
+
+        <section className="approval-section" id="approvals">
+          <h2>Pending Account Approvals</h2>
+
+          <p>
+            Review new accounts and assign their JET TRACK roles.
+          </p>
+
+          {pendingUsers.length === 0 ? (
+            <p>There are no pending accounts.</p>
+          ) : (
+            <div className="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Approve As</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {pendingUsers.map((pendingUser) => (
+                    <tr key={pendingUser.userID}>
+                      <td>
+                        {pendingUser.first_name}{" "}
+                        {pendingUser.last_name}
+                      </td>
+
+                      <td>{pendingUser.email}</td>
+
+                      <td>
+                        <button
+                          onClick={() =>
+                            approveAccount(
+                              pendingUser.userID,
+                              "Cadet"
+                            )
+                          }
+                        >
+                          Approve Cadet
+                        </button>
+
+                        <button
+                          onClick={() =>
+                            approveAccount(
+                              pendingUser.userID,
+                              "Cadet Leader"
+                            )
+                          }
+                        >
+                          Approve Leader
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      </main>
+    </div>
+  );
+}
+_________________________________________________________________________________________________________
 
 We installed these packages to make database first work:
 npm install sequelize sequelize-auto mysql2
