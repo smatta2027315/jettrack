@@ -20,23 +20,48 @@ function setTokenCookie(res, token) {
 }
 
 router.post('/register', async (req, res) => {
-  const { email, password, first_name, last_name } = req.body;
-  if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
-
-  const existing = await User.findOne({ where: { email } });
-  if (existing) return res.status(409).json({ error: 'Email already in use' });
-
-  const hashed = await bcrypt.hash(password, 10);
   try {
-    const user = await User.create({  email, password_hash: hashed, first_name, last_name });
-    const token = jwt.sign({ userid: user.userid, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
-    setTokenCookie(res, token);
-    return res.status(201).json({ id: user.id, email: user.email, first_name: user.first_name, last_name: user.last_name });
+    const { email, password, first_name, last_name } = req.body;
+
+    if (!email || !password || !first_name || !last_name) {
+      return res.status(400).json({
+        error: 'Email, password, first name, and last name are required'
+      });
+    }
+
+    const existing = await User.findOne({ where: { email } });
+
+    if (existing) {
+      return res.status(409).json({ error: 'Email already in use' });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      email,
+      password_hash: hashed,
+      first_name,
+      last_name,
+      role: 'Cadet',
+      accountActiv: 1,
+      accountStatus: 'pending'
+    });
+
+    return res.status(201).json({
+      message: 'Account created. Awaiting approval.',
+      user: {
+        userID: user.userID,
+        email: user.email,
+        accountStatus: user.accountStatus
+      }
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'Server error' });
   }
 });
+
+
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;

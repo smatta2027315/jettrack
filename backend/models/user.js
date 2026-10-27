@@ -9,7 +9,8 @@ module.exports = function(sequelize, DataTypes) {
     },
     email: {
       type: DataTypes.STRING(256),
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     password_hash: {
       type: DataTypes.STRING(128),
@@ -23,6 +24,11 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TINYINT,
       allowNull: false,
       defaultValue: 1
+    },
+    accountStatus: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+      defaultValue: 'pending'
     },
     roleApprovedBy: {
       type: DataTypes.INTEGER,
@@ -39,16 +45,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'user',
-    timestamps: false,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "userID" },
-        ]
-      },
-    ]
+    timestamps: false
   });
 };
