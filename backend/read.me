@@ -47,6 +47,7 @@ ________________________________________________________________________________
 STEP 1: Istall React Router --> npm install react-router-dom
 
 STEP 2: Input this into App.jsx ---> 
+
 import {
   BrowserRouter,
   Routes,
@@ -106,6 +107,7 @@ export default function App() {
 }
 _________________________________________________________________________________________________________
 STEP 3: Input into ---> src/components/ProtectedRoute.jsx
+
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
@@ -190,6 +192,7 @@ export default function ProtectedRoute({
 }
 _________________________________________________________________________________________________________
 STEP 4: Send user's credentials to your existing backend & create src/pages/Login.jsx:
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -316,6 +319,7 @@ export default function Login() {
 }
 _________________________________________________________________________________________________________
 STEP 5: Creat CADET Dashboard - src/pages/CadetDashboard.jsx
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -430,6 +434,7 @@ export default function CadetDashboard() {
 }
 _________________________________________________________________________________________________________
 STEP 6: Create the Cadet Leader Dashboard - src/pages/CadetLeaderDashboard.jsx
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -537,6 +542,7 @@ export default function CadetLeaderDashboard() {
 }
 _________________________________________________________________________________________________________
 STEP 7: Create the Instructor Dashboard - src/pages/InstructorDashboard.jsx
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 

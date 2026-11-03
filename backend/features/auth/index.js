@@ -75,13 +75,13 @@ router.post('/login', async (req, res) => {
 
   const token = jwt.sign({ userid: user.userid, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
   setTokenCookie(res, token);
-  return res.json({ user: { userid: user.userid, email: user.email, first_name: user.first_name, last_name: user.last_name } });
+  return res.json({ user: { userid: user.userid, email: user.email, first_name: user.first_name, last_name: user.last_name, role: user.role } });
 });
 
 // Return current user based on token cookie (auth middleware will populate req.user)
 const auth = require('../../middleware/auth');
 router.get('/me', auth, async (req, res) => {
-  const user = await User.findByPk(req.user.id, { attributes: ['id','email','first_name','last_name'] });
+  const user = await User.findByPk(req.user.id, { attributes: ['id','email','first_name','last_name','accountStatus','role'] });
   if (!user) return res.status(404).json({ error: 'User not found' });
   return res.json({ user });
 });

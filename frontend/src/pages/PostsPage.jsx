@@ -7,6 +7,8 @@ export default function PostsPage() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
+  
+
   const fetchPosts = async () => {
     setLoading(true);
     const res = await fetch('/api/posts');

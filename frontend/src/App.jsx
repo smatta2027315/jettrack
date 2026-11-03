@@ -3,7 +3,8 @@ import { Routes, Route, Link } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import PostsPage from './pages/PostsPage';
+import CadetHome from './pages/CadetHome';
+import LeaderHome from './pages/LeaderHome';
 import ProtectedRoute from './ProtectedRoute';
 
 function App() {
@@ -28,7 +29,16 @@ function App() {
 
       <main>
         <Routes>
-          <Route path="/" element={<ProtectedRoute><PostsPage /></ProtectedRoute>} />
+          <Route path="/" element={
+            <ProtectedRoute>
+              {user?.role === 'Cadet' ? (
+                <CadetHome />
+              ) : ['Instructor', 'Cadet Leader'].includes(user?.role) ? (
+                <LeaderHome />
+              ) : (
+                <p>unregistered (role: {user?.role ?? 'unknown'})</p>
+              )}
+            </ProtectedRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>
