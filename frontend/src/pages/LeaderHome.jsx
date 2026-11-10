@@ -1,10 +1,40 @@
 
+
 import { useAuth } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function LeaderHome() {
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // NEW: Dashboard buttons and their destination pages
+  const dashboardButtons = [
+    {
+      title: "CADET PROFILE",
+      image: "/images/cadet-profile.png",
+      path: "/cadet-profiles",
+    },
+    {
+      title: "CADET RECORD & TRACKING",
+      image: "/images/cadet-records.png",
+      path: "/cadet-records",
+    },
+    {
+      title: "EVENTS & SERVICE HOURS",
+      image: "/images/events-service.png",
+      path: "/events-service",
+    },
+    {
+      title: "AWARDS & PROMOTIONS",
+      image: "/images/awards-promotions.png",
+      path: "/awards-promotions",
+    },
+    {
+      title: "FITNESS MANAGEMENT",
+      image: "/images/fitness-management.png",
+      path: "/fitness-management",
+    },
+  ];
 
   // Log out the current user
   async function handleLogout() {
@@ -23,103 +53,113 @@ export default function LeaderHome() {
     return <p>Loading Leader Dashboard...</p>;
   }
 
+  // NEW: Only Cadet Leaders and Instructors can access this page
+  if (
+    user.role !== "Cadet Leader" &&
+    user.role !== "Instructor"
+  ) {
+    return <p>You do not have permission to view this page.</p>;
+  }
+
   return (
-    <div className="dashboard">
+    <div className="leader-home">
 
       {/* Sidebar */}
-      <aside className="sidebar">
-        <h2>JET TRACK</h2>
+      <aside className="leader-sidebar">
 
-        <p>Leader Portal</p>
+        <div className="sidebar-logo">
+          <h2>JET</h2>
+          <h2>TRACK</h2>
+        </div>
 
-        <nav>
-          <a href="#overview">Dashboard</a>
-          <a href="#profile">My Profile</a>
-          <a href="#fitness">Fitness Records</a>
-          <a href="#service">Service Hours</a>
-          <a href="#awards">Awards</a>
-          <a href="#promotions">Promotions</a>
-          <a href="#events">Events</a>
+        {/* Sidebar Navigation */}
+        <nav className="sidebar-nav">
+
+          <button
+            title="Dashboard"
+            onClick={() => navigate('/leader-home')}
+          >
+            🏠
+          </button>
+
+          <button
+            title="My Profile"
+            onClick={() => navigate('/profile')}
+          >
+            👤
+          </button>
+
+          <button
+            title="Settings"
+            onClick={() => navigate('/settings')}
+          >
+            ⚙️
+          </button>
+
+          <button
+            title="Log Out"
+            onClick={handleLogout}
+          >
+            ↪
+          </button>
+
         </nav>
-
-        <button onClick={handleLogout}>
-          Log Out
-        </button>
       </aside>
 
       {/* Main Dashboard */}
-      <main className="dashboard-content">
+      <main className="leader-main">
 
         {/* Welcome Header */}
-        <header className="dashboard-header" id="overview">
-          <div>
-            <h1>Leader Dashboard</h1>
+        <header className="leader-header">
 
-            <p>
-              Welcome back, {user.first_name}!
-            </p>
+          <div className="jet-track-logo">
+            <h1>JET TRACK</h1>
           </div>
 
-          <span className="role-badge">
-            {user.role}
-          </span>
+          <h2>
+            INTEGRITY - SERVICE - EXCELLENCE
+          </h2>
+
         </header>
 
-        {/* Dashboard Sections */}
-        <section className="dashboard-grid">
+        {/* Welcome Message */}
+        <div className="leader-welcome">
 
-          {/* Profile */}
-          <article className="dashboard-card" id="profile">
-            <h3>My Profile</h3>
+          <p>
+            Welcome back, {user.first_name}!
+          </p>
 
-            <p>View your personal and cadet information.</p>
+          <span>{user.role}</span>
 
-            <p>
-              <strong>Name:</strong>{' '}
-              {user.first_name} {user.last_name}
-            </p>
+        </div>
 
-            <p>
-              <strong>Email:</strong> {user.email}
-            </p>
+        {/* NEW: Clickable Dashboard Tiles */}
+        <section className="leader-grid">
 
-            <p>
-              <strong>Account Status:</strong>{' '}
-              {user.accountStatus}
-            </p>
-          </article>
+          {dashboardButtons.map((item) => (
 
-          {/* Fitness */}
-          <article className="dashboard-card" id="fitness">
-            <h3>Fitness Records</h3>
-            <p>Review your fitness assessment results.</p>
-          </article>
+            <button
+              className="leader-card"
+              key={item.path}
+              onClick={() => navigate(item.path)}
+            >
 
-          {/* Service Hours */}
-          <article className="dashboard-card" id="service">
-            <h3>Service Hours</h3>
-            <p>Track your community service contributions.</p>
-          </article>
+              <img
+                src={item.image}
+                alt=""
+                className="leader-card-image"
+              />
 
-          {/* Awards */}
-          <article className="dashboard-card" id="awards">
-            <h3>Awards</h3>
-            <p>View your earned awards and decorations.</p>
-          </article>
+              <span className="leader-card-title">
+                {item.title}
+              </span>
 
-          {/* Promotions */}
-          <article className="dashboard-card" id="promotions">
-            <h3>Promotions</h3>
-            <p>Review your promotion history.</p>
-          </article>
+            </button>
 
-          {/* Events */}
-          <article className="dashboard-card" id="events">
-            <h3>Events</h3>
-            <p>Explore unit events and activities.</p>
-          </article>
+          ))}
 
         </section>
+
       </main>
     </div>
   );
