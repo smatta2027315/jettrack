@@ -77,7 +77,7 @@ export default function LeaderHome() {
 
           <button
             title="Dashboard"
-            onClick={() => navigate('/leader-home')}
+            onClick={() => navigate('/')}
           >
             🏠
           </button>
@@ -91,7 +91,7 @@ export default function LeaderHome() {
 
           <button
             title="Settings"
-            onClick={() => navigate('/settings')}
+            onClick={() => navigate('/users')}
           >
             ⚙️
           </button>

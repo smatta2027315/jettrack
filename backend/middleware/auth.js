@@ -24,13 +24,23 @@ module.exports = async function (req, res, next) {
   const token = getTokenFromHeaderOrCookie(req);
   if (!token) return res.status(401).json({ error: 'No token provided' });
 
+  let payload;
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
-    const user = await db.user.findByPk(payload.id);
-    if (!user) return res.status(401).json({ error: 'Invalid token' });
-    req.user = { id: user.id, email: user.email };
-    next();
+    payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     return res.status(401).json({ error: 'Invalid token' });
   }
+
+  const userID = payload !== null && typeof payload === 'object'
+    ? payload.userID ?? payload.userid ?? payload.id
+    : null;
+  if (!Number.isInteger(userID)) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+
+  const user = await db.user.findByPk(userID);
+  if (!user) return res.status(401).json({ error: 'Invalid token' });
+
+  req.user = { id: user.userID, email: user.email, role:user.role };
+  return next();
 };

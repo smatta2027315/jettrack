@@ -16,7 +16,7 @@ export default function FeaturePage({ title, description }) {
 
         <button
           className="back-button"
-          onClick={() => navigate("/leader-home")}
+          onClick={() => navigate("/")}
         >
           ← Back to Dashboard
         </button>
