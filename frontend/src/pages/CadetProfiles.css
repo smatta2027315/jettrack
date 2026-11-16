@@ -1,0 +1,371 @@
+
+
+/* =================================
+   MAIN PAGE
+================================= */
+
+.cadet-profile-page {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+
+  display: flex;
+  overflow: auto;
+
+  background-color: #1600a5;
+  font-family: Georgia, serif;
+  color: black;
+  box-sizing: border-box;
+}
+
+/* =================================
+   LEFT SIDEBAR
+================================= */
+
+.profile-sidebar {
+  width: 50px;
+  min-width: 50px;
+  height: 100%;
+
+  background-color: #a4c9ed;
+  border-right: 3px solid #35b5ff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding-top: 8px;
+  box-sizing: border-box;
+}
+
+.profile-sidebar h2 {
+  display: none;
+}
+
+.profile-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.profile-sidebar button {
+  width: 32px;
+  height: 32px;
+
+  border: none;
+  border-radius: 50%;
+
+  background-color: #1726a5;
+  color: white;
+
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.profile-sidebar button:hover {
+  background-color: #3549d6;
+}
+
+/* =================================
+   MAIN CONTENT AREA
+================================= */
+
+.profile-main {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+
+  position: relative;
+
+  display: grid;
+  grid-template-rows: 65px 1fr;
+
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+/* =================================
+   PAGE TITLE
+================================= */
+
+.profile-main h1 {
+  align-self: center;
+  justify-self: center;
+
+  margin: 0;
+
+  color: #ffe36e;
+
+  font-family: Impact, sans-serif;
+  font-size: clamp(21px, 3vw, 32px);
+  letter-spacing: 1px;
+
+  text-align: center;
+
+  text-shadow:
+    0 0 5px #ffe36e,
+    0 0 12px #ffe36e;
+}
+
+/* =================================
+   PROFILE CONTENT LAYOUT
+================================= */
+
+.profile-avatar-section {
+  position: absolute;
+
+  left: 2%;
+  top: 23%;
+
+  width: 18%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* =================================
+   PROFILE AVATAR
+================================= */
+
+.profile-avatar {
+  width: clamp(80px, 15vw, 100px);
+  height: clamp(80px, 15vw, 100px);
+
+  border-radius: 50%;
+
+  background-color: #ffe36e;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 55px;
+}
+
+.profile-avatar-section select {
+  width: 115px;
+  max-width: 100%;
+
+  padding: 8px;
+
+  border: none;
+  border-radius: 12px;
+
+  background-color: #fff5b5;
+
+  font-weight: bold;
+  text-align: center;
+
+  cursor: pointer;
+}
+
+/* =================================
+   CADET INFORMATION TABLE
+================================= */
+
+.profile-table {
+  position: absolute;
+
+  left: 22%;
+  top: 24%;
+
+  width: 46%;
+  height: 73%;
+
+  background-color: #35b5f5;
+
+  border: 5px solid #39aaff;
+  border-radius: 9px;
+
+  overflow: hidden;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* Individual rows */
+
+.profile-table-row {
+  flex: 1;
+  min-height: 0;
+
+  display: grid;
+  grid-template-columns: 32% 68%;
+
+  border-bottom: 3px solid #5264e9;
+}
+
+.profile-table-row:last-child {
+  border-bottom: none;
+}
+
+/* Left column */
+
+.profile-table-label {
+  display: flex;
+  align-items: flex-start;
+
+  padding: 7px;
+
+  border-right: 3px solid #5264e9;
+
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Right column */
+
+.profile-table-value {
+  display: flex;
+  align-items: center;
+
+  padding: 5px;
+
+  font-size: 14px;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.profile-table-value input {
+  width: 100%;
+  min-width: 0;
+
+  padding: 6px;
+
+  border: 1px solid #777;
+  background-color: #e5f5ff;
+
+  font-family: Georgia, serif;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.name-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+/* =================================
+   INSTRUCTOR ACTION BUTTONS
+================================= */
+
+.profile-actions {
+  position: absolute;
+
+  top: 30%;
+  right: 5%;
+
+  width: 150px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-actions button {
+  width: 100%;
+
+  padding: 10px;
+
+  border: none;
+  border-radius: 11px;
+
+  background-color: #fff5b5;
+
+  color: #32149c;
+
+  font-size: 12px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.profile-actions button:nth-child(2) {
+  background-color: #ffcf7b;
+}
+
+.profile-actions button:nth-child(3) {
+  background-color: #ffe36e;
+}
+
+.profile-actions button:hover {
+  filter: brightness(1.08);
+}
+
+.profile-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* =================================
+   SAVE BUTTON
+================================= */
+
+.profile-actions .profile-save-button {
+  position: fixed;
+
+  right: 2%;
+  bottom: 3%;
+
+  width: 100px;
+
+  padding: 12px;
+
+  background-color: #579af5;
+  color: white;
+
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* =================================
+   RESPONSIVE DESIGN
+================================= */
+
+@media (max-width: 750px) {
+
+  .profile-main {
+    overflow-y: auto;
+    padding: 10px;
+    height: 100%;
+  }
+
+  .profile-main h1 {
+    font-size: 21px;
+  }
+
+  .profile-avatar-section {
+    position: static;
+    width: 100%;
+    margin: 15px auto;
+  }
+
+  .profile-table {
+    position: static;
+
+    width: 95%;
+    height: 350px;
+
+    margin: 15px auto;
+  }
+
+  .profile-actions {
+    position: static;
+
+    width: 95%;
+    margin: 15px auto;
+  }
+
+  .profile-actions .profile-save-button {
+    position: static;
+    width: 100%;
+  }
+}
