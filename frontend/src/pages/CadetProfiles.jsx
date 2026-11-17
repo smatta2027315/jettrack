@@ -6,7 +6,7 @@ import "./CadetProfiles.css";
 
 export default function CadetProfiles() {
   const { user } = useAuth();
-
+  
   // Determine user permissions
   const isInstructor = user?.role === "Instructor";
 

@@ -1,87 +1,134 @@
 
-/* MAIN PAGE */
+
+/* =================================
+   MAIN PAGE
+================================= */
 
 .awards-page {
-  display: flex;
+  position: fixed;
+  inset: 0;
   width: 100%;
-  min-height: 100vh;
-  background: #1700a8;
+  height: 100vh;
+  height: 100dvh;
+
+  display: flex;
+  overflow: auto;
+
+  background-color: #1600a5;
+  font-family: Georgia, serif;
   color: black;
-  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
-/* LEFT SIDEBAR */
+/* =================================
+   LEFT SIDEBAR
+================================= */
 
 .awards-sidebar {
   width: 50px;
   min-width: 50px;
-  background: #a6c9ed;
-  border-right: 3px solid #ffe16a;
+  height: 100%;
+
+  background-color: #a4c9ed;
+  border-right: 3px solid #35b5ff;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 13px;
-  padding-top: 5px;
+
+  padding-top: 8px;
+  box-sizing: border-box;
 }
 
 .awards-sidebar-logo {
   width: 39px;
   height: 45px;
-  background: white;
-  border: 2px solid #ffe16a;
+
+  background-color: white;
+  border: 2px solid #ffe36e;
+
   color: #173da1;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   font-size: 25px;
 }
 
 .awards-sidebar a {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
+
+  border: none;
   border-radius: 50%;
-  background: #173da1;
+
+  background-color: #1726a5;
   color: white;
+
   text-decoration: none;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+
+  font-size: 18px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .awards-sidebar a:hover {
-  background: #ffe16a;
-  color: #1700a8;
+  background-color: #3549d6;
 }
 
-/* MAIN CONTENT */
+/* =================================
+   MAIN CONTENT AREA
+================================= */
 
 .awards-main {
   flex: 1;
   min-width: 0;
-  padding: 0 10px 20px;
+  height: 100%;
+
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 0 15px 15px;
+  box-sizing: border-box;
+
+  overflow-y: auto;
 }
 
-/* HEADER */
+/* =================================
+   HEADER
+================================= */
 
 .awards-header {
-  height: 75px;
+  width: 100%;
+  min-height: 90px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 10px;
 }
+
+/* JET TRACK LOGO */
 
 .awards-brand {
   color: #a6c9ff;
   line-height: 0.8;
+
   min-width: 140px;
+
   text-shadow: 2px 2px #3423a0;
 }
 
 .awards-brand h1 {
-  font-size: 35px;
+  font-size: clamp(25px, 4vw, 35px);
   font-weight: 900;
 }
 
@@ -95,24 +142,37 @@
   margin-left: 15px;
 }
 
+/* PAGE TITLE */
+
 .awards-title {
-  color: #ffe16a;
+  color: #ffe36e;
+
+  font-family: Impact, sans-serif;
   font-size: clamp(17px, 2.7vw, 29px);
+
+  letter-spacing: 1px;
   text-align: center;
-  text-shadow: 0 0 8px #fff18a;
-  white-space: nowrap;
+
+  text-shadow:
+    0 0 5px #ffe36e,
+    0 0 12px #ffe36e;
 }
+
+/* AWARDS ICON */
 
 .awards-icon {
   width: 112px;
   min-width: 85px;
   height: 95px;
-  background: #ffbd63;
+
+  background-color: #ffbd63;
   border: 3px solid #2451dd;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   color: #6845aa;
   text-align: center;
 }
@@ -126,21 +186,28 @@
   line-height: 1;
 }
 
-/* CADET SELECTOR */
+/* =================================
+   CADET SELECTOR
+================================= */
 
 .awards-controls {
   margin: 0 0 0 5px;
+  position: relative;
+  z-index: 2;
 }
 
 .cadet-multi-select {
   width: 128px;
   min-height: 35px;
-  background: #80d5fa;
+
+  background-color: #80d5fa;
   border: none;
   border-radius: 9px;
+
   color: black;
   font-weight: bold;
   text-align: center;
+
   padding: 5px;
   cursor: pointer;
 }
@@ -155,114 +222,174 @@
   margin-top: 4px;
 }
 
-/* MAIN PANELS */
+/* =================================
+   AWARDS AND PROMOTIONS LAYOUT
+================================= */
 
 .awards-content {
+  flex: 1;
+  min-height: 300px;
+
   display: flex;
   align-items: stretch;
+
   gap: 28px;
-  margin: -35px 0 0 145px;
-  min-height: 240px;
+
+  margin: -35px 0 10px 140px;
+  padding-bottom: 10px;
 }
+
+/* =================================
+   PROMOTION AND AWARD PANELS
+================================= */
 
 .awards-panel {
   border-radius: 10px;
+
   padding: 12px;
+
   display: flex;
   flex-direction: column;
+
   gap: 12px;
+
+  box-sizing: border-box;
 }
+
+/* PROMOTION PANEL */
 
 .promotion-panel {
   flex: 1;
-  background: #ffb84d;
-  max-width: 180px;
+  max-width: 220px;
+
+  background-color: #ffb84d;
 }
+
+/* AWARD PANEL */
 
 .award-panel {
-  flex: 0.75;
-  background: #ffcf83;
-  max-width: 155px;
+  flex: 1;
+  max-width: 220px;
+
+  background-color: #ffcf83;
 }
 
+/* PANEL HEADINGS */
+
 .awards-panel label {
-  background: #ffd36b;
+  background-color: #ffd36b;
   border: 1px solid #b17c28;
   border-radius: 10px;
+
   min-height: 48px;
   padding: 10px 5px;
+
   font-family: Georgia, serif;
   font-size: 14px;
   font-weight: bold;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   text-align: center;
 }
+
+/* PROMOTION RANK SELECTOR */
 
 .promotion-panel select {
   width: 100%;
   padding: 8px;
-  background: #ffe09a;
+
+  background-color: #ffe09a;
   border: 1px solid #bd842c;
   border-radius: 7px;
+
   font-weight: bold;
   font-size: 12px;
 }
 
+/* AWARD TEXT INPUT */
+
 .award-panel textarea {
+  flex: 1;
   width: 100%;
-  min-height: 125px;
+  min-height: 150px;
+
   resize: vertical;
+
   padding: 10px;
+
   border: 1px solid #bd842c;
   border-radius: 7px;
-  background: #fff1d6;
+
+  background-color: #fff1d6;
+
+  font-family: Georgia, serif;
   font-size: 13px;
+
   outline: none;
+  box-sizing: border-box;
 }
 
-/* ACTION BUTTONS */
+/* =================================
+   INSTRUCTOR ACTION BUTTONS
+================================= */
 
 .awards-actions {
   width: 105px;
   min-width: 90px;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 8px;
+
+  gap: 9px;
 }
 
 .awards-actions button {
   width: 100%;
   min-height: 27px;
+
   border: none;
   border-radius: 8px;
+
   font-size: 10px;
   font-weight: bold;
+
   cursor: pointer;
 }
 
-.add-btn {
-  background: #fff5b7;
+/* ADD */
+
+.awards-actions .add-btn {
+  background-color: #fff5b7;
   color: #30258b;
 }
 
-.update-btn {
-  background: #ffc66d;
+/* UPDATE */
+
+.awards-actions .update-btn {
+  background-color: #ffc66d;
   color: #30258b;
 }
 
-.delete-btn {
-  background: #ffe45e;
+/* DELETE */
+
+.awards-actions .delete-btn {
+  background-color: #ffe45e;
   color: #30258b;
 }
 
-.save-btn {
-  background: #5796f6;
+/* SAVE */
+
+.awards-actions .save-btn {
+  min-height: 40px;
+
+  background-color: #5796f6;
   color: white;
-  min-height: 40px !important;
-  font-size: 13px !important;
+
+  font-size: 13px;
   margin-top: 8px;
 }
 
@@ -271,14 +398,18 @@
   transform: scale(1.02);
 }
 
-/* EXISTING RECORDS */
+/* =================================
+   EXISTING RECORDS
+================================= */
 
 .awards-records {
-  margin: 15px 0 0 145px;
+  width: min(300px, 90%);
+  margin: 0 0 10px 140px;
+
   display: flex;
   flex-direction: column;
+
   gap: 6px;
-  max-width: 300px;
 }
 
 .awards-records label {
@@ -288,29 +419,40 @@
 }
 
 .awards-records select {
+  width: 100%;
   padding: 8px;
+
   border-radius: 7px;
   border: none;
-  background: #e8d9ff;
+
+  background-color: #e8d9ff;
 }
 
-/* STATUS MESSAGE */
+/* =================================
+   STATUS MESSAGE
+================================= */
 
 .awards-message {
   color: white;
   font-weight: bold;
   text-align: center;
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
-/* RESPONSIVE */
+/* =================================
+   RESPONSIVE DESIGN
+================================= */
 
-@media (max-width: 650px) {
+@media (max-width: 750px) {
+
+  .awards-main {
+    padding: 10px;
+  }
+
   .awards-header {
+    min-height: 75px;
     flex-wrap: wrap;
-    height: auto;
     justify-content: center;
-    padding: 10px 0;
   }
 
   .awards-brand {
@@ -318,6 +460,7 @@
   }
 
   .awards-title {
+    font-size: 20px;
     white-space: normal;
   }
 
@@ -325,13 +468,21 @@
     display: none;
   }
 
+  .awards-controls {
+    margin: 10px 0;
+  }
+
   .awards-content {
-    margin: 15px 0 0;
+    flex: none;
+    min-height: 350px;
+
+    margin: 10px 0;
     gap: 10px;
   }
 
   .promotion-panel,
   .award-panel {
+    flex: 1;
     min-width: 0;
   }
 
@@ -341,24 +492,31 @@
   }
 
   .awards-records {
-    margin-left: 0;
+    margin: 10px 0;
+    width: 100%;
   }
 }
-.awards-page {
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-  height: 100vh;
-  background: #1700a8;
-  color: black;
-  overflow: hidden;
-}
 
-.awards-main {
-  flex: 1;
-  width: calc(100% - 50px);
-  min-width: 0;
-  min-height: 100vh;
-  padding: 0 20px 20px;
-  overflow-y: auto;
+@media (max-width: 480px) {
+
+  .awards-content {
+    flex-direction: column;
+  }
+
+  .promotion-panel,
+  .award-panel {
+    max-width: none;
+    min-height: 180px;
+  }
+
+  .awards-actions {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .awards-actions .save-btn {
+    margin-top: 0;
+  }
 }

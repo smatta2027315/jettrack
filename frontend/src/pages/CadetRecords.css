@@ -1,41 +1,54 @@
 
 
-/* ==============================
-   MAIN BACKGROUND
-================================ */
+
+/* =================================
+   MAIN PAGE
+================================= */
 
 .cadet-records-page {
-  display: flex;
+  position: fixed;
+  inset: 0;
   width: 100%;
-  min-height: 100vh;
-  background: #1800a8;
-  color: black;
+  height: 100vh;
+  height: 100dvh;
+
+  display: flex;
+  overflow: auto;
+
+  background-color: #1600a5;
   font-family: Georgia, "Times New Roman", serif;
-  overflow-x: hidden;
+  color: black;
+  box-sizing: border-box;
 }
 
-/* ==============================
+/* =================================
    LEFT SIDEBAR
-================================ */
+================================= */
 
 .records-sidebar {
-  width: 50px;
-  min-width: 50px;
+  width: 55px;
+  min-width: 55px;
+  height: 100%;
+
   background: #a8c8ed;
   border-right: 3px solid white;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 5px;
+
+  padding-top: 10px;
   gap: 22px;
 }
 
 .records-sidebar h2 {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
+
   font-family: Arial, sans-serif;
   font-size: 17px;
   color: #1600a3;
+
   margin: 5px 0;
   letter-spacing: 2px;
 }
@@ -44,21 +57,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .records-sidebar nav button {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
+
   border: none;
   border-radius: 50%;
+
   background: #183c91;
   color: white;
+
   font-size: 19px;
   cursor: pointer;
+
   display: flex;
   justify-content: center;
   align-items: center;
+
+  transition: 0.2s;
 }
 
 .records-sidebar nav button:hover {
@@ -66,49 +85,72 @@
   transform: scale(1.08);
 }
 
-/* ==============================
-   HEADER
-================================ */
+/* =================================
+   MAIN CONTENT
+================================= */
 
 .records-main {
   flex: 1;
   min-width: 0;
-  padding: 7px 7px 10px;
-  background: #1800a8;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 10px 15px 15px;
+
+  background: #1600a5;
+  overflow-y: auto;
 }
 
+/* =================================
+   HEADER
+================================= */
+
 .records-header {
-  height: 64px;
+  width: 100%;
+  min-height: 75px;
+
   position: relative;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 7px;
+
+  margin-bottom: 12px;
 }
 
 .records-header h1 {
   color: #ffe46c;
+
   font-family: Impact, "Arial Narrow", sans-serif;
-  font-size: clamp(20px, 3vw, 32px);
-  letter-spacing: 1px;
+  font-size: clamp(25px, 3vw, 38px);
+
+  letter-spacing: 1.5px;
   text-align: center;
   margin: 0;
+
   text-shadow:
     0 0 4px #fff1a0,
     0 0 9px #ffcc33,
     0 0 15px #ffcc33;
 }
 
-/* TOP RIGHT CADET GRAPHIC */
+/* =================================
+   TOP RIGHT CADET GRAPHIC
+================================= */
 
 .records-header-icon {
   position: absolute;
-  right: 2px;
+  right: 5px;
   top: 0;
-  width: 105px;
-  height: 65px;
+
+  width: 115px;
+  height: 72px;
+
   border: 2px solid #008cff;
   background: #111b91;
+
   overflow: hidden;
 }
 
@@ -120,7 +162,7 @@
 
 .cadet-group span {
   position: absolute;
-  font-size: 38px;
+  font-size: 42px;
   color: #e1b82c;
   bottom: -8px;
 }
@@ -132,9 +174,9 @@
 }
 
 .cadet-group span:nth-child(2) {
-  left: 30px;
+  left: 32px;
   z-index: 2;
-  font-size: 49px;
+  font-size: 52px;
   color: #dfb52c;
 }
 
@@ -144,66 +186,87 @@
   transform: scale(1.1);
 }
 
-/* ==============================
-   MAIN CONTENT LAYOUT
-================================ */
+/* =================================
+   MAIN RECORDS LAYOUT
+================================= */
 
 .records-content {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+
   display: grid;
-  grid-template-columns: 118px repeat(3, minmax(0, 1fr));
-  gap: 12px;
+
+  grid-template-columns:
+    minmax(120px, 0.8fr)
+    repeat(3, minmax(0, 1.5fr));
+
+  gap: 16px;
   align-items: stretch;
-  min-height: 245px;
 }
 
-/* ==============================
-   CADET AVATAR AREA
-================================ */
+/* =================================
+   CADET AVATAR SECTION
+================================= */
 
 .records-cadet-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 11px;
+  justify-content: flex-start;
+
+  gap: 15px;
+  padding-top: 15px;
 }
 
 .records-avatar {
-  width: 99px;
-  height: 99px;
+  width: 110px;
+  height: 110px;
+
+  flex-shrink: 0;
+
   border-radius: 50%;
   background: #ffdf65;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+
   position: relative;
   overflow: hidden;
-  margin-bottom: 2px;
+
+  margin-bottom: 5px;
 }
 
-/* Avatar head */
+/* AVATAR HEAD */
 
 .avatar-head {
-  width: 31px;
-  height: 31px;
+  width: 34px;
+  height: 34px;
+
   border-radius: 50%;
   background: #fff8dc;
-  margin-top: 12px;
+
+  margin-top: 13px;
 }
 
-/* Avatar body */
+/* AVATAR BODY */
 
 .avatar-body {
-  width: 65px;
-  height: 48px;
+  width: 73px;
+  height: 54px;
+
   background: #fff8dc;
   border-radius: 50% 50% 0 0;
+
   margin-top: 7px;
 }
 
 .records-cadet-section h3 {
   color: white;
-  font-size: 12px;
+  font-size: 14px;
+
   margin: 0;
   text-align: center;
 }
@@ -211,39 +274,51 @@
 /* CADET SELECT */
 
 .records-cadet-section select {
-  width: 112px;
-  height: 24px;
+  width: 100%;
+  max-width: 140px;
+  height: 30px;
+
   border: none;
   border-radius: 9px;
+
   background: #fffbd7;
   color: #1900a8;
-  font-size: 9px;
+
+  font-size: 11px;
   font-weight: bold;
+
   text-align: center;
   cursor: pointer;
+  padding: 3px;
 }
 
-/* ==============================
+/* =================================
    INSTRUCTOR BUTTONS
-================================ */
+================================= */
 
 .records-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
+
   width: 100%;
-  gap: 9px;
+  gap: 10px;
 }
 
 .records-actions button {
-  width: 94px;
-  height: 23px;
+  width: 100%;
+  max-width: 125px;
+  min-height: 30px;
+
   border: none;
   border-radius: 8px;
+
   background: #ffe16b;
   color: #1800a8;
-  font-size: 9px;
+
+  font-size: 11px;
   font-weight: bold;
+
   cursor: pointer;
   transition: 0.2s;
 }
@@ -261,8 +336,8 @@
 .records-actions .records-save-button {
   background: #438dff;
   color: white;
-  height: 25px;
-  margin-top: 9px;
+  min-height: 33px;
+  margin-top: 12px;
 }
 
 .records-actions .records-cancel-button {
@@ -270,20 +345,27 @@
   color: #1800a8;
 }
 
-/* ==============================
-   THREE MAIN PANELS
-================================ */
+/* =================================
+   RECORD PANELS
+================================= */
 
 .records-card {
+  width: 100%;
   min-width: 0;
-  height: 245px;
+  min-height: 0;
+  height: 100%;
+
   box-sizing: border-box;
-  padding: 13px 12px;
-  border-radius: 11px;
+
+  padding: 18px 15px;
+
+  border-radius: 14px;
+
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
-/* FITNESS */
+/* FITNESS PANEL */
 
 .fitness-card {
   background: #36b5f5;
@@ -293,7 +375,7 @@
   text-align: center;
 }
 
-/* EVENTS */
+/* EVENTS PANEL */
 
 .events-card {
   background: #506cff;
@@ -304,11 +386,11 @@
   padding-left: 5px;
 }
 
-/* AWARDS */
+/* AWARDS PANEL */
 
 .awards-card {
   background: #f3b5f7;
-  border-radius: 24px 24px 29px 29px;
+  border-radius: 24px;
 }
 
 .awards-card h2 {
@@ -319,19 +401,22 @@
 /* PANEL HEADINGS */
 
 .records-card h2 {
-  font-size: 12px;
-  line-height: 1.25;
-  margin: 8px 3px 16px;
-  min-height: 30px;
+  font-size: 16px;
+  line-height: 1.3;
+
+  margin: 5px 3px 20px;
+
+  min-height: 35px;
   font-weight: bold;
 }
 
-/* ==============================
-   TABLE STYLING
-================================ */
+/* =================================
+   RECORD TABLES
+================================= */
 
 .records-table {
   width: 100%;
+
   border: 1px solid rgba(0, 0, 120, 0.55);
   box-sizing: border-box;
 }
@@ -339,7 +424,9 @@
 .records-row {
   display: grid;
   grid-template-columns: 70% 30%;
-  min-height: 29px;
+
+  min-height: 38px;
+
   border-bottom: 1px solid rgba(0, 0, 120, 0.45);
 }
 
@@ -348,8 +435,10 @@
 }
 
 .records-row span {
-  padding: 6px 5px;
+  padding: 9px 7px;
+
   font-size: 13px;
+
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -358,7 +447,9 @@
   border-left: 1px solid rgba(0, 0, 120, 0.45);
 }
 
-/* FITNESS TABLE */
+/* =================================
+   FITNESS TABLE
+================================= */
 
 .fitness-card .records-row {
   grid-template-columns: 72% 28%;
@@ -367,13 +458,18 @@
 .records-row input {
   width: 100%;
   min-width: 0;
+
   box-sizing: border-box;
+
   border: none;
   border-left: 1px solid rgba(0, 0, 120, 0.45);
+
   background: rgba(255, 255, 255, 0.3);
-  padding: 4px;
+
+  padding: 6px;
+
   font-family: inherit;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .records-row input:focus {
@@ -381,9 +477,9 @@
   outline: none;
 }
 
-/* ==============================
+/* =================================
    EVENTS TABLE
-================================ */
+================================= */
 
 .events-table .records-row {
   grid-template-columns: 70% 30%;
@@ -395,102 +491,136 @@
 
 .events-card textarea {
   width: 100%;
-  min-height: 110px;
+  min-height: 130px;
+
   box-sizing: border-box;
-  padding: 7px;
+
+  padding: 9px;
+
   resize: vertical;
+
   border: 1px solid #1c299f;
+  border-radius: 5px;
+
   background: rgba(255,255,255,0.3);
+
   font-family: inherit;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .events-card small {
-  font-size: 9px;
+  font-size: 11px;
 }
 
-/* ==============================
+/* =================================
    AWARDS AND PROMOTIONS
-================================ */
+================================= */
 
 .records-award-section {
   border: 1px solid #d000ce;
-  margin-bottom: 0;
+  margin-bottom: 8px;
 }
 
 .records-award-section + .records-award-section {
-  margin-top: 0;
+  margin-top: 8px;
 }
 
 .records-award-section h3 {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: normal;
+
   margin: 0;
-  padding: 7px;
+  padding: 10px;
+
   border-bottom: 1px solid #d000ce;
 }
 
 .records-award-item {
-  min-height: 28px;
-  padding: 6px;
-  font-size: 11px;
+  min-height: 35px;
+
+  padding: 9px;
+
+  font-size: 12px;
+
   overflow-wrap: anywhere;
+
   border-bottom: 1px solid rgba(208, 0, 204, 0.35);
 }
 
 .records-award-section textarea {
   width: 100%;
-  min-height: 55px;
+  min-height: 65px;
+
   display: block;
   box-sizing: border-box;
-  padding: 7px;
+
+  padding: 9px;
+
   resize: vertical;
+
   border: none;
+
   background: rgba(255,255,255,0.4);
+
   font-family: inherit;
-  font-size: 11px;
+  font-size: 12px;
 }
 
-/* ==============================
+/* =================================
    EMPTY STATES
-================================ */
+================================= */
 
 .records-no-data {
-  font-size: 11px;
+  font-size: 13px;
   text-align: center;
-  padding: 8px;
+  padding: 12px;
 }
 
 .records-empty {
   grid-column: 2 / -1;
+
   background: #36b5f5;
   border-radius: 12px;
-  padding: 25px;
+
+  padding: 30px;
+
   text-align: center;
 }
 
-/* ==============================
+/* =================================
+   SCROLLBAR
+================================= */
+
+.records-card::-webkit-scrollbar,
+.records-main::-webkit-scrollbar {
+  width: 7px;
+}
+
+.records-card::-webkit-scrollbar-thumb,
+.records-main::-webkit-scrollbar-thumb {
+  background: rgba(24, 0, 168, 0.45);
+  border-radius: 10px;
+}
+
+/* =================================
    RESPONSIVE DESIGN
-================================ */
+================================= */
 
-@media (max-width: 850px) {
-  .records-header-icon {
-    display: none;
-  }
-
+@media (max-width: 1050px) {
   .records-content {
-    grid-template-columns: 110px repeat(2, minmax(0, 1fr));
+    grid-template-columns: 115px repeat(2, minmax(0, 1fr));
   }
 
   .awards-card {
     grid-column: 2 / -1;
+    min-height: 300px;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .records-sidebar {
-    width: 42px;
-    min-width: 42px;
+    width: 45px;
+    min-width: 45px;
   }
 
   .records-main {
@@ -498,11 +628,15 @@
   }
 
   .records-header {
-    height: 55px;
+    min-height: 60px;
   }
 
   .records-header h1 {
-    font-size: 19px;
+    font-size: 22px;
+  }
+
+  .records-header-icon {
+    display: none;
   }
 
   .records-content {
@@ -510,14 +644,14 @@
   }
 
   .records-cadet-section {
-    padding-bottom: 12px;
+    padding-bottom: 15px;
   }
 
   .records-card,
   .awards-card {
     grid-column: 1;
     height: auto;
-    min-height: 200px;
+    min-height: 250px;
   }
 
   .records-empty {

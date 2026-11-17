@@ -1,88 +1,134 @@
 
-/* MAIN PAGE */
+
+/* =================================
+   MAIN PAGE
+================================= */
 
 .fitness-page {
-  display: flex;
+  position: fixed;
+  inset: 0;
   width: 100%;
-  min-height: 100vh;
-  background: #1700a8;
+  height: 100vh;
+  height: 100dvh;
+
+  display: flex;
+  overflow: auto;
+
+  background-color: #1600a5;
+  font-family: Georgia, serif;
   color: black;
-  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
-/* LEFT SIDEBAR */
+/* =================================
+   LEFT SIDEBAR
+================================= */
 
 .fitness-sidebar {
   width: 50px;
   min-width: 50px;
-  background: #a6c9ed;
-  border-right: 3px solid #ffe16a;
+  height: 100%;
+
+  background-color: #a4c9ed;
+  border-right: 3px solid #35b5ff;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 13px;
-  padding-top: 5px;
+
+  padding-top: 8px;
+  box-sizing: border-box;
 }
 
 .fitness-sidebar-logo {
   width: 39px;
   height: 45px;
-  background: white;
-  color: #132b91;
-  border: 2px solid #ffe16a;
+
+  background-color: white;
+  border: 2px solid #ffe36e;
+
+  color: #173da1;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   font-size: 25px;
 }
 
 .fitness-sidebar a {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
+
+  border: none;
   border-radius: 50%;
-  background: #173da1;
+
+  background-color: #1726a5;
   color: white;
+
   text-decoration: none;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+
+  font-size: 18px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .fitness-sidebar a:hover {
-  background: #ffe16a;
-  color: #1700a8;
+  background-color: #3549d6;
 }
 
-/* MAIN CONTENT */
+/* =================================
+   MAIN CONTENT AREA
+================================= */
 
 .fitness-main {
   flex: 1;
   min-width: 0;
-  padding: 0 10px 20px;
+  height: 100%;
+
   position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 0 15px 15px;
+  box-sizing: border-box;
+
+  overflow-y: auto;
 }
 
-/* HEADER */
+/* =================================
+   HEADER
+================================= */
 
 .fitness-header {
-  height: 75px;
+  width: 100%;
+  min-height: 85px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 10px;
 }
+
+/* JET TRACK LOGO */
 
 .fitness-brand {
   color: #a6c9ff;
   line-height: 0.8;
+
   min-width: 140px;
+
   text-shadow: 2px 2px #3423a0;
 }
 
 .fitness-brand h1 {
-  font-size: 35px;
+  font-size: clamp(25px, 4vw, 35px);
   font-weight: 900;
 }
 
@@ -96,25 +142,39 @@
   margin-left: 15px;
 }
 
+/* PAGE TITLE */
+
 .fitness-title {
-  color: #ffe16a;
-  font-size: clamp(18px, 3vw, 30px);
+  color: #ffe36e;
+
+  font-family: Impact, sans-serif;
+  font-size: clamp(18px, 3vw, 32px);
+
+  letter-spacing: 1px;
   text-align: center;
-  text-shadow: 0 0 8px #fff18a;
-  white-space: nowrap;
+
+  text-shadow:
+    0 0 5px #ffe36e,
+    0 0 12px #ffe36e;
 }
+
+/* FITNESS ICON */
 
 .fitness-management-icon {
   width: 95px;
   min-width: 75px;
   height: 85px;
-  background: #1711a6;
+
+  background-color: #1711a6;
   border: 3px solid #2451dd;
+
   color: #ffe16a;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   text-align: center;
 }
 
@@ -127,7 +187,9 @@
   line-height: 1;
 }
 
-/* CADET SELECTOR */
+/* =================================
+   CADET SELECTOR
+================================= */
 
 .fitness-controls {
   margin: 0 0 15px 15px;
@@ -136,46 +198,72 @@
 .fitness-controls select {
   width: 112px;
   height: 34px;
+
   border: none;
   border-radius: 10px;
-  background: #36b9f5;
+
+  background-color: #36b9f5;
   color: white;
+
   font-weight: bold;
   text-align: center;
-  cursor: pointer;
+
   padding: 0 5px;
+  cursor: pointer;
 }
 
-/* FITNESS CONTENT */
+/* =================================
+   FITNESS CONTENT LAYOUT
+================================= */
 
 .fitness-content {
+  flex: 1;
+  min-height: 0;
+
   display: flex;
-  gap: 10px;
-  align-items: center;
+  align-items: stretch;
+
+  gap: 12px;
   padding-left: 15px;
+  padding-bottom: 10px;
 }
+
+/* FITNESS INPUTS */
 
 .fitness-inputs {
   flex: 1;
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+
   gap: 12px;
 }
 
+/* INDIVIDUAL FITNESS FIELDS */
+
 .fitness-field {
-  min-height: 67px;
+  flex: 1;
+  min-height: 65px;
+
   border-radius: 13px;
   border: 2px solid #294bff;
+
   display: flex;
   align-items: center;
+
   padding: 10px;
   gap: 12px;
+
+  box-sizing: border-box;
 }
 
 .fitness-field label {
   font-family: Georgia, serif;
-  font-size: 20px;
+  font-size: clamp(15px, 2vw, 20px);
   font-weight: bold;
+
   white-space: nowrap;
 }
 
@@ -184,68 +272,93 @@
   min-width: 0;
   width: 100%;
   height: 42px;
+
   border: none;
   outline: none;
-  background: transparent;
+
+  background-color: transparent;
+
+  font-family: Georgia, serif;
   font-size: 20px;
   font-weight: bold;
 }
 
+/* FIELD COLORS */
+
 .situps-field {
-  background: #80d1f8;
+  background-color: #80d1f8;
 }
 
 .pushups-field {
-  background: #a6c5fa;
+  background-color: #a6c5fa;
   border-color: #9d7aff;
 }
 
 .mile-field {
-  background: #f7c4f0;
+  background-color: #f7c4f0;
   border-color: #e879f4;
 }
 
-/* ACTION BUTTONS */
+/* =================================
+   INSTRUCTOR ACTION BUTTONS
+================================= */
 
 .fitness-actions {
   width: 100px;
   min-width: 85px;
+
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  padding-top: 100px;
+  justify-content: center;
+
+  gap: 9px;
+  padding-top: 80px;
+  box-sizing: border-box;
 }
 
 .fitness-actions button {
   width: 100%;
-  min-height: 25px;
+  min-height: 27px;
+
   border: none;
   border-radius: 8px;
+
   font-size: 10px;
   font-weight: bold;
+
   cursor: pointer;
 }
 
-.add-btn {
-  background: #fff5b7;
+/* ADD */
+
+.fitness-actions .add-btn {
+  background-color: #fff5b7;
   color: #30258b;
 }
 
-.update-btn {
-  background: #ffc66d;
+/* UPDATE */
+
+.fitness-actions .update-btn {
+  background-color: #ffc66d;
   color: #30258b;
 }
 
-.delete-btn {
-  background: #ffe45e;
+/* DELETE */
+
+.fitness-actions .delete-btn {
+  background-color: #ffe45e;
   color: #30258b;
 }
 
-.save-btn {
-  background: #5796f6;
+/* SAVE */
+
+.fitness-actions .save-btn {
+  min-height: 40px;
+
+  background-color: #5796f6;
   color: white;
-  min-height: 40px !important;
-  font-size: 13px !important;
+
+  font-size: 13px;
   margin-top: 8px;
 }
 
@@ -254,23 +367,31 @@
   transform: scale(1.02);
 }
 
-/* STATUS MESSAGE */
+/* =================================
+   STATUS MESSAGE
+================================= */
 
 .fitness-message {
   color: white;
   text-align: center;
   font-weight: bold;
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
-/* RESPONSIVE */
+/* =================================
+   RESPONSIVE DESIGN
+================================= */
 
-@media (max-width: 600px) {
+@media (max-width: 750px) {
+
+  .fitness-main {
+    padding: 10px;
+  }
+
   .fitness-header {
-    height: auto;
+    min-height: 75px;
     flex-wrap: wrap;
     justify-content: center;
-    padding: 10px 0;
   }
 
   .fitness-brand {
@@ -278,6 +399,7 @@
   }
 
   .fitness-title {
+    font-size: 20px;
     white-space: normal;
   }
 
@@ -285,39 +407,32 @@
     display: none;
   }
 
-  .fitness-content {
-    padding-left: 0;
+  .fitness-controls {
+    margin: 10px 0;
   }
 
-  .fitness-field {
-    flex-wrap: wrap;
+  .fitness-content {
+    padding-left: 0;
+    flex-direction: column;
+  }
+
+  .fitness-inputs {
+    min-height: 300px;
   }
 
   .fitness-field label {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .fitness-actions {
-    width: 85px;
-    padding-top: 80px;
-  }
-}
-.fitness-page {
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-  height: 100vh;
-  background: #1700a8;
-  color: black;
-  overflow: hidden;
-}
+    width: 100%;
+    padding-top: 0;
 
-.fitness-main {
-  flex: 1;
-  width: calc(100% - 50px);
-  min-width: 0;
-  min-height: 100vh;
-  padding: 0 20px 20px;
-  position: relative;
-  overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .fitness-actions .save-btn {
+    margin-top: 0;
+  }
 }
