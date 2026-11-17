@@ -1,6 +1,6 @@
 
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
 import "./CadetProfiles.css";
 
@@ -10,35 +10,52 @@ export default function CadetProfiles() {
   // Determine user permissions
   const isInstructor = user?.role === "Instructor";
 
-  // Temporary sample cadet data
-  const [cadets, setCadets] = useState([
-    {
-      cadetID: 1,
-      first_name: "John",
-      last_name: "Smith",
-      rank: "Cadet Staff Sergeant",
-      position: "Flight Sergeant",
-      grade_level: 11,
-      years_in_program: 2,
-      birthday: "2009-04-15",
-    },
-    {
-      cadetID: 2,
-      first_name: "Jane",
-      last_name: "Doe",
-      rank: "Cadet Airman",
-      position: "Cadet",
-      grade_level: 10,
-      years_in_program: 1,
-      birthday: "2010-08-20",
-    },
-  ]);
-
-  const [selectedID, setSelectedID] = useState(
-    isInstructor ? 1 : null
-  );
+  const [cadets, setCadets] = useState([]);
+  const [cadetsLoading, setCadetsLoading] = useState(false);
+  const [cadetsError, setCadetsError] = useState("");
+  const [selectedID, setSelectedID] = useState(null);
+  const [saveError, setSaveError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const [mode, setMode] = useState("view");
+
+  useEffect(() => {
+    if (!isInstructor) return;
+
+    let active = true;
+
+    async function fetchCadets() {
+      setCadetsLoading(true);
+      setCadetsError("");
+
+      try {
+        const response = await fetch("/api/cadets", { credentials: "include" });
+        if (!response.ok) {
+          const result = await response.json().catch(() => ({}));
+          throw new Error(result.error || `Unable to load cadets (${response.status})`);
+        }
+
+        const result = await response.json();
+        if (!Array.isArray(result)) {
+          throw new Error("The server returned an invalid cadets response.");
+        }
+
+        if (active) {
+          setCadets(result);
+          setSelectedID(result[0]?.cadetID ?? null);
+        }
+      } catch (err) {
+        if (active) setCadetsError(err.message || "Unable to load cadets.");
+      } finally {
+        if (active) setCadetsLoading(false);
+      }
+    }
+
+    fetchCadets();
+    return () => {
+      active = false;
+    };
+  }, [isInstructor]);
 
   const selectedCadet = isInstructor
     ? cadets.find((c) => c.cadetID === selectedID)
@@ -47,9 +64,8 @@ export default function CadetProfiles() {
         last_name: user?.last_name || "",
         rank: "",
         position: "",
+        flight: "",
         grade_level: "",
-        years_in_program: "",
-        birthday: "",
       };
 
   const emptyProfile = {
@@ -57,9 +73,8 @@ export default function CadetProfiles() {
     last_name: "",
     rank: "",
     position: "",
+    flight: "",
     grade_level: "",
-    years_in_program: "",
-    birthday: "",
   };
 
   const [formData, setFormData] = useState(emptyProfile);
@@ -85,65 +100,45 @@ export default function CadetProfiles() {
   function handleUpdate() {
     if (!selectedCadet) return;
 
+    setSaveError("");
     setFormData({
       first_name: selectedCadet.first_name,
       last_name: selectedCadet.last_name,
       rank: selectedCadet.rank,
       position: selectedCadet.position,
+      flight: selectedCadet.flight,
       grade_level: selectedCadet.grade_level,
-      years_in_program: selectedCadet.years_in_program,
-      birthday: selectedCadet.birthday,
     });
 
     setMode("edit");
   }
 
-  // Start adding a new profile
-  function handleAdd() {
-    setSelectedID(null);
-    setFormData(emptyProfile);
-    setMode("add");
-  }
+  async function handleSave() {
+    setSaving(true);
+    setSaveError("");
 
-  // Save new or updated information locally
-  function handleSave() {
-    if (mode === "add") {
-      const newCadet = {
-        ...formData,
-        cadetID: Date.now(),
-      };
+    try {
+      const response = await fetch(`/api/cadets/${selectedID}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        throw new Error(result.error || `Unable to save cadet (${response.status})`);
+      }
 
-      setCadets((prev) => [...prev, newCadet]);
-      setSelectedID(newCadet.cadetID);
-    } else {
+      const updatedCadet = await response.json();
       setCadets((prev) =>
-        prev.map((cadet) =>
-          cadet.cadetID === selectedID
-            ? { ...cadet, ...formData }
-            : cadet
-        )
+        prev.map((cadet) => cadet.cadetID === selectedID ? updatedCadet : cadet)
       );
+      setMode("view");
+    } catch (err) {
+      setSaveError(err.message || "Unable to save cadet.");
+    } finally {
+      setSaving(false);
     }
-
-    setMode("view");
-  }
-
-  // Delete selected profile
-  function handleDelete() {
-    if (!selectedCadet) return;
-
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this cadet profile?"
-    );
-
-    if (!confirmDelete) return;
-
-    setCadets((prev) =>
-      prev.filter((cadet) => cadet.cadetID !== selectedID)
-    );
-
-    setSelectedID(null);
-    setMode("view");
   }
 
   // Display the selected profile or editing form
@@ -153,9 +148,8 @@ export default function CadetProfiles() {
     { label: "Name (Last, First)", name: "name" },
     { label: "Rank", name: "rank" },
     { label: "Position", name: "position" },
+    { label: "Flight", name: "flight" },
     { label: "Grade", name: "grade_level" },
-    { label: "Num Year in Program", name: "years_in_program" },
-    { label: "Birthday", name: "birthday" },
   ];
 
   return (
@@ -187,7 +181,13 @@ export default function CadetProfiles() {
               value={selectedID ?? ""}
               onChange={(e) => selectCadet(e.target.value)}
             >
-              <option value="">Select Cadet</option>
+              <option value="">
+                {cadetsLoading
+                  ? "Loading cadets..."
+                  : cadets.length === 0
+                  ? "No cadets found"
+                  : "Select Cadet"}
+              </option>
 
               {cadets.map((cadet) => (
                 <option
@@ -198,6 +198,9 @@ export default function CadetProfiles() {
                 </option>
               ))}
             </select>
+          )}
+          {isInstructor && cadetsError && (
+            <p className="error" role="alert">{cadetsError}</p>
           )}
         </section>
 
@@ -243,15 +246,7 @@ export default function CadetProfiles() {
                   ) : (
                     <input
                       name={field.name}
-                      type={
-                        field.name === "birthday"
-                          ? "date"
-                          : ["grade_level", "years_in_program"].includes(
-                              field.name
-                            )
-                          ? "number"
-                          : "text"
-                      }
+                      type={field.name === "grade_level" ? "number" : "text"}
                       value={formData[field.name]}
                       onChange={handleChange}
                     />
@@ -267,10 +262,7 @@ export default function CadetProfiles() {
         {/* INSTRUCTOR CONTROLS */}
         {isInstructor && (
           <section className="profile-actions">
-
-            <button onClick={handleAdd}>
-              Add Info
-            </button>
+            {saveError && <p className="error" role="alert">{saveError}</p>}
 
             <button
               onClick={handleUpdate}
@@ -279,19 +271,13 @@ export default function CadetProfiles() {
               Update Info
             </button>
 
-            <button
-              onClick={handleDelete}
-              disabled={!selectedCadet || mode !== "view"}
-            >
-              Delete Info
-            </button>
-
             {mode !== "view" && (
               <button
                 className="profile-save-button"
                 onClick={handleSave}
+                disabled={saving}
               >
-                SAVE
+                {saving ? "SAVING..." : "SAVE"}
               </button>
             )}
 
@@ -302,4 +288,3 @@ export default function CadetProfiles() {
     </div>
   );
 }
-

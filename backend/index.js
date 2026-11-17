@@ -11,10 +11,12 @@ app.use(express.urlencoded({ extended: true }));
 //const postsFeatures = require('./features/posts');
 const authFeatures = require('./features/auth');
 const usersFeatures = require('./features/users');
+const cadetsFeatures = require('./features/cadets');
 
 //app.use('/api', postsFeatures);
 app.use('/api/auth', authFeatures);
 app.use('/api/users', usersFeatures);
+app.use('/api/cadets', cadetsFeatures);
 
 // Start the server
 app.listen(PORT, () => {

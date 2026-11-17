@@ -1,0 +1,526 @@
+
+
+/* ==============================
+   MAIN BACKGROUND
+================================ */
+
+.cadet-records-page {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background: #1800a8;
+  color: black;
+  font-family: Georgia, "Times New Roman", serif;
+  overflow-x: hidden;
+}
+
+/* ==============================
+   LEFT SIDEBAR
+================================ */
+
+.records-sidebar {
+  width: 50px;
+  min-width: 50px;
+  background: #a8c8ed;
+  border-right: 3px solid white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 5px;
+  gap: 22px;
+}
+
+.records-sidebar h2 {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: Arial, sans-serif;
+  font-size: 17px;
+  color: #1600a3;
+  margin: 5px 0;
+  letter-spacing: 2px;
+}
+
+.records-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.records-sidebar nav button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: #183c91;
+  color: white;
+  font-size: 19px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.records-sidebar nav button:hover {
+  background: #554cff;
+  transform: scale(1.08);
+}
+
+/* ==============================
+   HEADER
+================================ */
+
+.records-main {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 7px 10px;
+  background: #1800a8;
+}
+
+.records-header {
+  height: 64px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 7px;
+}
+
+.records-header h1 {
+  color: #ffe46c;
+  font-family: Impact, "Arial Narrow", sans-serif;
+  font-size: clamp(20px, 3vw, 32px);
+  letter-spacing: 1px;
+  text-align: center;
+  margin: 0;
+  text-shadow:
+    0 0 4px #fff1a0,
+    0 0 9px #ffcc33,
+    0 0 15px #ffcc33;
+}
+
+/* TOP RIGHT CADET GRAPHIC */
+
+.records-header-icon {
+  position: absolute;
+  right: 2px;
+  top: 0;
+  width: 105px;
+  height: 65px;
+  border: 2px solid #008cff;
+  background: #111b91;
+  overflow: hidden;
+}
+
+.cadet-group {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.cadet-group span {
+  position: absolute;
+  font-size: 38px;
+  color: #e1b82c;
+  bottom: -8px;
+}
+
+.cadet-group span:nth-child(1) {
+  left: 4px;
+  transform: scale(1.1);
+  color: #1648b5;
+}
+
+.cadet-group span:nth-child(2) {
+  left: 30px;
+  z-index: 2;
+  font-size: 49px;
+  color: #dfb52c;
+}
+
+.cadet-group span:nth-child(3) {
+  right: 3px;
+  color: #1648b5;
+  transform: scale(1.1);
+}
+
+/* ==============================
+   MAIN CONTENT LAYOUT
+================================ */
+
+.records-content {
+  display: grid;
+  grid-template-columns: 118px repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+  min-height: 245px;
+}
+
+/* ==============================
+   CADET AVATAR AREA
+================================ */
+
+.records-cadet-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 11px;
+}
+
+.records-avatar {
+  width: 99px;
+  height: 99px;
+  border-radius: 50%;
+  background: #ffdf65;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+/* Avatar head */
+
+.avatar-head {
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  background: #fff8dc;
+  margin-top: 12px;
+}
+
+/* Avatar body */
+
+.avatar-body {
+  width: 65px;
+  height: 48px;
+  background: #fff8dc;
+  border-radius: 50% 50% 0 0;
+  margin-top: 7px;
+}
+
+.records-cadet-section h3 {
+  color: white;
+  font-size: 12px;
+  margin: 0;
+  text-align: center;
+}
+
+/* CADET SELECT */
+
+.records-cadet-section select {
+  width: 112px;
+  height: 24px;
+  border: none;
+  border-radius: 9px;
+  background: #fffbd7;
+  color: #1900a8;
+  font-size: 9px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* ==============================
+   INSTRUCTOR BUTTONS
+================================ */
+
+.records-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 9px;
+}
+
+.records-actions button {
+  width: 94px;
+  height: 23px;
+  border: none;
+  border-radius: 8px;
+  background: #ffe16b;
+  color: #1800a8;
+  font-size: 9px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.records-actions button:hover:not(:disabled) {
+  background: white;
+  transform: scale(1.04);
+}
+
+.records-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.records-actions .records-save-button {
+  background: #438dff;
+  color: white;
+  height: 25px;
+  margin-top: 9px;
+}
+
+.records-actions .records-cancel-button {
+  background: white;
+  color: #1800a8;
+}
+
+/* ==============================
+   THREE MAIN PANELS
+================================ */
+
+.records-card {
+  min-width: 0;
+  height: 245px;
+  box-sizing: border-box;
+  padding: 13px 12px;
+  border-radius: 11px;
+  overflow-y: auto;
+}
+
+/* FITNESS */
+
+.fitness-card {
+  background: #36b5f5;
+}
+
+.fitness-card h2 {
+  text-align: center;
+}
+
+/* EVENTS */
+
+.events-card {
+  background: #506cff;
+}
+
+.events-card h2 {
+  text-align: left;
+  padding-left: 5px;
+}
+
+/* AWARDS */
+
+.awards-card {
+  background: #f3b5f7;
+  border-radius: 24px 24px 29px 29px;
+}
+
+.awards-card h2 {
+  text-align: left;
+  padding-left: 5px;
+}
+
+/* PANEL HEADINGS */
+
+.records-card h2 {
+  font-size: 12px;
+  line-height: 1.25;
+  margin: 8px 3px 16px;
+  min-height: 30px;
+  font-weight: bold;
+}
+
+/* ==============================
+   TABLE STYLING
+================================ */
+
+.records-table {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 120, 0.55);
+  box-sizing: border-box;
+}
+
+.records-row {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  min-height: 29px;
+  border-bottom: 1px solid rgba(0, 0, 120, 0.45);
+}
+
+.records-row:last-child {
+  border-bottom: none;
+}
+
+.records-row span {
+  padding: 6px 5px;
+  font-size: 13px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.records-row span + span {
+  border-left: 1px solid rgba(0, 0, 120, 0.45);
+}
+
+/* FITNESS TABLE */
+
+.fitness-card .records-row {
+  grid-template-columns: 72% 28%;
+}
+
+.records-row input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border: none;
+  border-left: 1px solid rgba(0, 0, 120, 0.45);
+  background: rgba(255, 255, 255, 0.3);
+  padding: 4px;
+  font-family: inherit;
+  font-size: 11px;
+}
+
+.records-row input:focus {
+  background: white;
+  outline: none;
+}
+
+/* ==============================
+   EVENTS TABLE
+================================ */
+
+.events-table .records-row {
+  grid-template-columns: 70% 30%;
+}
+
+.events-table .records-header-row {
+  font-weight: bold;
+}
+
+.events-card textarea {
+  width: 100%;
+  min-height: 110px;
+  box-sizing: border-box;
+  padding: 7px;
+  resize: vertical;
+  border: 1px solid #1c299f;
+  background: rgba(255,255,255,0.3);
+  font-family: inherit;
+  font-size: 11px;
+}
+
+.events-card small {
+  font-size: 9px;
+}
+
+/* ==============================
+   AWARDS AND PROMOTIONS
+================================ */
+
+.records-award-section {
+  border: 1px solid #d000ce;
+  margin-bottom: 0;
+}
+
+.records-award-section + .records-award-section {
+  margin-top: 0;
+}
+
+.records-award-section h3 {
+  font-size: 13px;
+  font-weight: normal;
+  margin: 0;
+  padding: 7px;
+  border-bottom: 1px solid #d000ce;
+}
+
+.records-award-item {
+  min-height: 28px;
+  padding: 6px;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid rgba(208, 0, 204, 0.35);
+}
+
+.records-award-section textarea {
+  width: 100%;
+  min-height: 55px;
+  display: block;
+  box-sizing: border-box;
+  padding: 7px;
+  resize: vertical;
+  border: none;
+  background: rgba(255,255,255,0.4);
+  font-family: inherit;
+  font-size: 11px;
+}
+
+/* ==============================
+   EMPTY STATES
+================================ */
+
+.records-no-data {
+  font-size: 11px;
+  text-align: center;
+  padding: 8px;
+}
+
+.records-empty {
+  grid-column: 2 / -1;
+  background: #36b5f5;
+  border-radius: 12px;
+  padding: 25px;
+  text-align: center;
+}
+
+/* ==============================
+   RESPONSIVE DESIGN
+================================ */
+
+@media (max-width: 850px) {
+  .records-header-icon {
+    display: none;
+  }
+
+  .records-content {
+    grid-template-columns: 110px repeat(2, minmax(0, 1fr));
+  }
+
+  .awards-card {
+    grid-column: 2 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .records-sidebar {
+    width: 42px;
+    min-width: 42px;
+  }
+
+  .records-main {
+    padding: 8px;
+  }
+
+  .records-header {
+    height: 55px;
+  }
+
+  .records-header h1 {
+    font-size: 19px;
+  }
+
+  .records-content {
+    grid-template-columns: 1fr;
+  }
+
+  .records-cadet-section {
+    padding-bottom: 12px;
+  }
+
+  .records-card,
+  .awards-card {
+    grid-column: 1;
+    height: auto;
+    min-height: 200px;
+  }
+
+  .records-empty {
+    grid-column: 1;
+  }
+}

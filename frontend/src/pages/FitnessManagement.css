@@ -1,0 +1,323 @@
+
+/* MAIN PAGE */
+
+.fitness-page {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background: #1700a8;
+  color: black;
+  overflow-x: hidden;
+}
+
+/* LEFT SIDEBAR */
+
+.fitness-sidebar {
+  width: 50px;
+  min-width: 50px;
+  background: #a6c9ed;
+  border-right: 3px solid #ffe16a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 13px;
+  padding-top: 5px;
+}
+
+.fitness-sidebar-logo {
+  width: 39px;
+  height: 45px;
+  background: white;
+  color: #132b91;
+  border: 2px solid #ffe16a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+}
+
+.fitness-sidebar a {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #173da1;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.fitness-sidebar a:hover {
+  background: #ffe16a;
+  color: #1700a8;
+}
+
+/* MAIN CONTENT */
+
+.fitness-main {
+  flex: 1;
+  min-width: 0;
+  padding: 0 10px 20px;
+  position: relative;
+}
+
+/* HEADER */
+
+.fitness-header {
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.fitness-brand {
+  color: #a6c9ff;
+  line-height: 0.8;
+  min-width: 140px;
+  text-shadow: 2px 2px #3423a0;
+}
+
+.fitness-brand h1 {
+  font-size: 35px;
+  font-weight: 900;
+}
+
+.fitness-brand h1 span {
+  color: #ffe16a;
+}
+
+.fitness-brand h2 {
+  font-size: 25px;
+  font-style: italic;
+  margin-left: 15px;
+}
+
+.fitness-title {
+  color: #ffe16a;
+  font-size: clamp(18px, 3vw, 30px);
+  text-align: center;
+  text-shadow: 0 0 8px #fff18a;
+  white-space: nowrap;
+}
+
+.fitness-management-icon {
+  width: 95px;
+  min-width: 75px;
+  height: 85px;
+  background: #1711a6;
+  border: 3px solid #2451dd;
+  color: #ffe16a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.fitness-management-icon span {
+  font-size: 29px;
+}
+
+.fitness-management-icon h3 {
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* CADET SELECTOR */
+
+.fitness-controls {
+  margin: 0 0 15px 15px;
+}
+
+.fitness-controls select {
+  width: 112px;
+  height: 34px;
+  border: none;
+  border-radius: 10px;
+  background: #36b9f5;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  padding: 0 5px;
+}
+
+/* FITNESS CONTENT */
+
+.fitness-content {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-left: 15px;
+}
+
+.fitness-inputs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fitness-field {
+  min-height: 67px;
+  border-radius: 13px;
+  border: 2px solid #294bff;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  gap: 12px;
+}
+
+.fitness-field label {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.fitness-field input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 42px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.situps-field {
+  background: #80d1f8;
+}
+
+.pushups-field {
+  background: #a6c5fa;
+  border-color: #9d7aff;
+}
+
+.mile-field {
+  background: #f7c4f0;
+  border-color: #e879f4;
+}
+
+/* ACTION BUTTONS */
+
+.fitness-actions {
+  width: 100px;
+  min-width: 85px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-top: 100px;
+}
+
+.fitness-actions button {
+  width: 100%;
+  min-height: 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.add-btn {
+  background: #fff5b7;
+  color: #30258b;
+}
+
+.update-btn {
+  background: #ffc66d;
+  color: #30258b;
+}
+
+.delete-btn {
+  background: #ffe45e;
+  color: #30258b;
+}
+
+.save-btn {
+  background: #5796f6;
+  color: white;
+  min-height: 40px !important;
+  font-size: 13px !important;
+  margin-top: 8px;
+}
+
+.fitness-actions button:hover {
+  filter: brightness(0.9);
+  transform: scale(1.02);
+}
+
+/* STATUS MESSAGE */
+
+.fitness-message {
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 12px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+  .fitness-header {
+    height: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .fitness-brand {
+    display: none;
+  }
+
+  .fitness-title {
+    white-space: normal;
+  }
+
+  .fitness-management-icon {
+    display: none;
+  }
+
+  .fitness-content {
+    padding-left: 0;
+  }
+
+  .fitness-field {
+    flex-wrap: wrap;
+  }
+
+  .fitness-field label {
+    font-size: 16px;
+  }
+
+  .fitness-actions {
+    width: 85px;
+    padding-top: 80px;
+  }
+}
+.fitness-page {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  height: 100vh;
+  background: #1700a8;
+  color: black;
+  overflow: hidden;
+}
+
+.fitness-main {
+  flex: 1;
+  width: calc(100% - 50px);
+  min-width: 0;
+  min-height: 100vh;
+  padding: 0 20px 20px;
+  position: relative;
+  overflow-y: auto;
+}
