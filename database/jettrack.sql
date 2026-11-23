@@ -7,6 +7,7 @@ CREATE TABLE `user` (
   `password_hash` varchar(128) NOT NULL,
   `role` varchar(45) DEFAULT NULL,
   `accountActiv` tinyint NOT NULL DEFAULT '1',
+  `accountStatus` varchar(20) NOT NULL DEFAULT 'pending',
   `roleApprovedBy` int DEFAULT NULL,
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,

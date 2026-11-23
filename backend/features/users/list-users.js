@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
 
 
     const users = await db.user.findAll({
-      attributes: ['userID', 'email', 'first_name', 'last_name', 'role'],
+      attributes: ['userID', 'email', 'first_name', 'last_name', 'role', 'accountStatus'],
       order: [['last_name', 'ASC']],
     });
 

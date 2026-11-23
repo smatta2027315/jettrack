@@ -18,8 +18,8 @@ function initModels(sequelize) {
 
   award.belongsTo(cadet, { as: "cadet", foreignKey: "cadetID"});
   cadet.hasMany(award, { as: "awards", foreignKey: "cadetID"});
-  fitnessscore.belongsTo(cadet, { as: "FitnessScore", foreignKey: "FitnessScoreID"});
-  cadet.hasOne(fitnessscore, { as: "fitnessscore", foreignKey: "FitnessScoreID"});
+  fitnessscore.belongsTo(cadet, { as: "cadet", foreignKey: "cadetID"});
+  cadet.hasMany(fitnessscore, { as: "fitnessscores", foreignKey: "cadetID"});
   promotion.belongsTo(cadet, { as: "cadet", foreignKey: "cadetID"});
   cadet.hasMany(promotion, { as: "promotions", foreignKey: "cadetID"});
   servicehours.belongsTo(cadet, { as: "cadet", foreignKey: "cadetID"});

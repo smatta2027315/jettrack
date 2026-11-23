@@ -52,12 +52,14 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                {user?.role === 'Cadet' ? (
+                {!user?.role ? (
+                  <p>Your account is awaiting role assignment by an instructor. Refresh this page after your role has been assigned.</p>
+                ) : user.role === 'Cadet' ? (
                   <CadetHome />
-                ) : ['Instructor', 'Cadet Leader'].includes(user?.role) ? (
+                ) : ['Instructor', 'Cadet Leader'].includes(user.role) ? (
                   <LeaderHome />
                 ) : (
-                  <p>Unregistered (role: {user?.role ?? 'unknown'})</p>
+                  <p>Unregistered (role: {user.role})</p>
                 )}
               </ProtectedRoute>
             }
@@ -84,7 +86,14 @@ function App() {
 
           {/* Fitness Management */}
           <Route path="/fitness-management" element={<FitnessManagement />} />
-            <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute>
+                {user?.role === 'Instructor' ? <Users /> : <p>You do not have permission to view this page.</p>}
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
     </div>

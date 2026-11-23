@@ -42,7 +42,7 @@ router.post('/register', async (req, res) => {
       password_hash: hashed,
       first_name,
       last_name,
-      role: 'Cadet',
+      role: null,
       accountActiv: 1,
       accountStatus: 'pending'
     });
@@ -52,6 +52,9 @@ router.post('/register', async (req, res) => {
       user: {
         userID: user.userID,
         email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        role: user.role,
         accountStatus: user.accountStatus
       }
     });
@@ -75,7 +78,7 @@ router.post('/login', async (req, res) => {
 
   const token = jwt.sign({ userID: user.userID, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
   setTokenCookie(res, token);
-  return res.json({ user: { userid: user.userID, email: user.email, first_name: user.first_name, last_name: user.last_name, role: user.role } });
+  return res.json({ user: { userid: user.userID, email: user.email, first_name: user.first_name, last_name: user.last_name, role: user.role, accountStatus: user.accountStatus } });
 });
 
 // Return current user based on token cookie (auth middleware will populate req.user)

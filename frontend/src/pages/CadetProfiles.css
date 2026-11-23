@@ -205,6 +205,15 @@
   border-bottom: none;
 }
 
+.profile-empty-message {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+}
+
 /* Left column */
 
 .profile-table-label {
@@ -232,7 +241,8 @@
   min-width: 0;
 }
 
-.profile-table-value input {
+.profile-table-value input,
+.profile-table-value select {
   width: 100%;
   min-width: 0;
 
@@ -303,6 +313,12 @@
 .profile-actions button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+.profile-save-message {
+  color: #fff5b5;
+  font-size: 12px;
+  overflow-wrap: anywhere;
 }
 
 /* =================================

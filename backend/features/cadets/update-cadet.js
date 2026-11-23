@@ -18,12 +18,14 @@ router.put('/:cadetID', async (req, res) => {
     typeof first_name !== 'string' || !first_name.trim() ||
     typeof last_name !== 'string' || !last_name.trim() ||
     typeof rank !== 'string' || !rank.trim() ||
-    typeof flight !== 'string' || !flight.trim() ||
+    !['Alpha', 'Bravo', 'Charlie'].includes(flight) ||
+    !['Cadet', 'Cadet Leader'].includes(position) ||
     grade_level === undefined ||
     grade_level === null ||
     grade_level === '' ||
     !Number.isInteger(Number(grade_level)) ||
-    (position !== null && typeof position !== 'string')
+    Number(grade_level) < 8 ||
+    Number(grade_level) > 12
   ) {
     return res.status(400).json({ error: 'Invalid cadet profile data' });
   }
@@ -47,6 +49,7 @@ router.put('/:cadetID', async (req, res) => {
       await cadet.user.update({
         first_name: first_name.trim(),
         last_name: last_name.trim(),
+        role: position,
       }, { transaction });
 
       return cadet;

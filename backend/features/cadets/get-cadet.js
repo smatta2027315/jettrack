@@ -4,8 +4,8 @@ const db = require('../../models');
 
 // GET /api/cadets/:cadetID - Return one cadet with their user details
 router.get('/:cadetID', async (req, res) => {
-  if (req.user.role !== 'Instructor') {
-    return res.status(403).json({ error: 'Forbidden: Only instructors can access this endpoint' });
+  if (!['Instructor', 'Cadet Leader', 'Cadet'].includes(req.user.role)) {
+    return res.status(403).json({ error: 'Forbidden: You cannot view cadet profiles' });
   }
 
   const cadetID = Number(req.params.cadetID);
@@ -16,7 +16,10 @@ router.get('/:cadetID', async (req, res) => {
   try {
     const cadet = await db.cadet.findOne({
       attributes: ['cadetID', 'userID', 'rank', 'grade_level', 'position', 'flight'],
-      where: { cadetID },
+      where: {
+        cadetID,
+        ...(req.user.role === 'Cadet' ? { userID: req.user.id } : {}),
+      },
       include: [{
         model: db.user,
         as: 'user',

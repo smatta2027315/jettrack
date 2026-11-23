@@ -53,8 +53,6 @@ export function AuthProvider({ children }) {
       throw new Error(err.error || 'Registration failed');
     }
     const data = await res.json();
-    // register sets cookie; set user from response
-    setUser(data);
     return data;
   };
 

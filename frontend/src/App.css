@@ -108,6 +108,16 @@ button:disabled {
   background-color: #f0f0f0;
 }
 
+.user-role-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.user-role-actions button {
+  padding: 0.35rem 0.55rem;
+}
+
 
 /* LOGIN PAGE */
 .login-page {

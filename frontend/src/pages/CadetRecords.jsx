@@ -1,239 +1,183 @@
-
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
 import "./CadetRecords.css";
 
+const emptyFitness = { sitUps: "", pushUps: "", mileTime: "" };
+
 export default function CadetRecords() {
   const { user } = useAuth();
+  const canEdit = ["Instructor", "Cadet Leader"].includes(user?.role);
+  const canView = canEdit || user?.role === "Cadet";
 
-  const isInstructor = user?.role === "Instructor";
-
-  // Temporary sample cadet records
-  const [cadets, setCadets] = useState([
-    {
-      cadetID: 1,
-      first_name: "John",
-      last_name: "Smith",
-
-      fitness: {
-        sitUps: "42",
-        pushUps: "35",
-        mileTime: "8:15",
-      },
-
-      events: [
-        { event: "Veterans Day Ceremony", hours: "3" },
-        { event: "Community Cleanup", hours: "4" },
-        { event: "Color Guard", hours: "2" },
-      ],
-
-      promotions: [
-        "Promoted to Cadet Staff Sergeant",
-      ],
-
-      awards: [
-        "Physical Fitness Award",
-        "Community Service Award",
-      ],
-    },
-
-    {
-      cadetID: 2,
-      first_name: "Jane",
-      last_name: "Doe",
-
-      fitness: {
-        sitUps: "38",
-        pushUps: "28",
-        mileTime: "9:02",
-      },
-
-      events: [
-        { event: "Veterans Day Ceremony", hours: "3" },
-        { event: "Food Drive", hours: "5" },
-      ],
-
-      promotions: [
-        "Promoted to Cadet Airman",
-      ],
-
-      awards: [
-        "Academic Achievement Award",
-      ],
-    },
-  ]);
-
-  const emptyRecords = {
-    fitness: {
-      sitUps: "",
-      pushUps: "",
-      mileTime: "",
-    },
-    events: [],
-    eventsText: "",
-    promotions: [],
-    promotionsText: "",
-    awards: [],
-    awardsText: "",
-  };
-
-  const [selectedID, setSelectedID] = useState(
-    isInstructor ? 1 : user?.cadetID ?? null
-  );
-
+  const [cadets, setCadets] = useState([]);
+  const [cadetsLoading, setCadetsLoading] = useState(true);
+  const [cadetsError, setCadetsError] = useState("");
+  const [selectedID, setSelectedID] = useState(null);
+  const [records, setRecords] = useState(null);
+  const [recordsLoading, setRecordsLoading] = useState(false);
+  const [recordsError, setRecordsError] = useState("");
   const [mode, setMode] = useState("view");
+  const [formData, setFormData] = useState({
+    fitness: emptyFitness,
+    eventsText: "",
+    promotionsText: "",
+    awardsText: "",
+  });
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const selectedCadet = cadets.find(
-    (cadet) => cadet.cadetID === selectedID
-  );
+  useEffect(() => {
+    let active = true;
 
-  // Convert saved records into editable form data
-  function getFormData(cadet) {
-    if (!cadet) return { ...emptyRecords };
+    async function fetchCadets() {
+      try {
+        const response = await fetch("/api/cadets", { credentials: "include" });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(result.error || `Unable to load cadets (${response.status})`);
+        }
+        if (!Array.isArray(result)) {
+          throw new Error("The server returned an invalid cadets response.");
+        }
+        if (active) {
+          setCadets(result);
+          setSelectedID(result[0]?.cadetID ?? null);
+        }
+      } catch (err) {
+        if (active) setCadetsError(err.message || "Unable to load cadets.");
+      } finally {
+        if (active) setCadetsLoading(false);
+      }
+    }
 
-    return {
-      fitness: { ...cadet.fitness },
+    if (canView) fetchCadets();
+    else setCadetsLoading(false);
 
-      events: cadet.events || [],
-      eventsText: (cadet.events || [])
-        .map((event) => `${event.event} | ${event.hours}`)
-        .join("\n"),
-
-      promotions: cadet.promotions || [],
-      promotionsText: (cadet.promotions || []).join("\n"),
-
-      awards: cadet.awards || [],
-      awardsText: (cadet.awards || []).join("\n"),
+    return () => {
+      active = false;
     };
-  }
+  }, [canView]);
 
-  const [formData, setFormData] = useState(emptyRecords);
+  useEffect(() => {
+    if (!selectedID) {
+      setRecords(null);
+      return undefined;
+    }
 
-  // Select a cadet
+    let active = true;
+    setRecordsLoading(true);
+    setRecordsError("");
+
+    async function fetchRecords() {
+      try {
+        const response = await fetch(`/api/records/${selectedID}`, {
+          credentials: "include",
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(result.error || `Unable to load records (${response.status})`);
+        }
+        if (active) setRecords(result);
+      } catch (err) {
+        if (active) setRecordsError(err.message || "Unable to load cadet records.");
+      } finally {
+        if (active) setRecordsLoading(false);
+      }
+    }
+
+    fetchRecords();
+    return () => {
+      active = false;
+    };
+  }, [selectedID]);
+
+  const selectedCadet = cadets.find((cadet) => cadet.cadetID === selectedID);
+  const currentRecords = records || {
+    fitness: emptyFitness,
+    events: [],
+    promotions: [],
+    awards: [],
+  };
+  const isEditing = mode === "edit";
+
   function selectCadet(id) {
     setSelectedID(Number(id));
     setMode("view");
-    setFormData(emptyRecords);
+    setMessage("");
   }
 
-  // Handle fitness score changes
-  function handleFitnessChange(e) {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      fitness: {
-        ...prev.fitness,
-        [name]: value,
-      },
-    }));
-  }
-
-  // Handle event, promotion, and award changes
-  function handleChange(e) {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
-
-  // Update existing records
   function handleUpdate() {
-    if (!selectedCadet) return;
-
-    setFormData(getFormData(selectedCadet));
+    if (!records) return;
+    setFormData({
+      fitness: { ...records.fitness },
+      eventsText: records.events.map((event) => `${event.event} | ${event.hours}`).join("\n"),
+      promotionsText: records.promotions.map((promotion) => promotion.rank).join("\n"),
+      awardsText: records.awards
+        .map((award) => `${award.name}${award.description ? ` | ${award.description}` : ""}`)
+        .join("\n"),
+    });
     setMode("edit");
+    setMessage("");
   }
 
-  // Add new records for selected cadet
-  function handleAdd() {
-    if (!selectedCadet) return;
-
-    setFormData({ ...emptyRecords });
-    setMode("add");
+  function lines(value) {
+    return value.split("\n").map((line) => line.trim()).filter(Boolean);
   }
 
-  // Save records
-  function handleSave() {
-    if (!selectedCadet) return;
+  async function handleSave() {
+    setSaving(true);
+    setRecordsError("");
+    setMessage("");
 
-    const updatedRecords = {
-      fitness: { ...formData.fitness },
+    const events = lines(formData.eventsText).map((line) => {
+      const [event, hours] = line.split("|");
+      return { event: event?.trim() || "", hours: hours?.trim() || "" };
+    });
+    const promotions = lines(formData.promotionsText).map((rank) => ({ rank }));
+    const awards = lines(formData.awardsText).map((line) => {
+      const [name, ...description] = line.split("|");
+      return { name: name.trim(), description: description.join("|").trim() };
+    });
 
-      events: formData.eventsText
-        .split("\n")
-        .filter((line) => line.trim())
-        .map((line) => {
-          const [event, hours] = line.split("|");
-
-          return {
-            event: event?.trim() || "",
-            hours: hours?.trim() || "",
-          };
+    try {
+      const response = await fetch(`/api/records/${selectedID}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fitness: formData.fitness,
+          events,
+          promotions,
+          awards,
         }),
-
-      promotions: formData.promotionsText
-        .split("\n")
-        .map((item) => item.trim())
-        .filter(Boolean),
-
-      awards: formData.awardsText
-        .split("\n")
-        .map((item) => item.trim())
-        .filter(Boolean),
-    };
-
-    setCadets((prev) =>
-      prev.map((cadet) =>
-        cadet.cadetID === selectedID
-          ? { ...cadet, ...updatedRecords }
-          : cadet
-      )
-    );
-
-    setMode("view");
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(result.error || `Unable to save records (${response.status})`);
+      }
+      setRecords(result);
+      setMode("view");
+      setMessage("Records saved to the database.");
+    } catch (err) {
+      setRecordsError(err.message || "Unable to save cadet records.");
+    } finally {
+      setSaving(false);
+    }
   }
 
-  // Delete records without deleting the cadet profile
-  function handleDelete() {
-    if (!selectedCadet) return;
-
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this cadet's records?"
-    );
-
-    if (!confirmDelete) return;
-
-    setCadets((prev) =>
-      prev.map((cadet) =>
-        cadet.cadetID === selectedID
-          ? {
-              ...cadet,
-              fitness: { ...emptyRecords.fitness },
-              events: [],
-              promotions: [],
-              awards: [],
-            }
-          : cadet
-      )
-    );
-
+  function cancelEdit() {
     setMode("view");
+    setRecordsError("");
   }
 
-  const isEditing = mode !== "view";
+  if (!canView) {
+    return <p>You do not have permission to view cadet records.</p>;
+  }
 
   return (
     <div className="cadet-records-page">
-
-      {/* LEFT SIDEBAR */}
       <aside className="records-sidebar">
-
         <h2>JET TRACK</h2>
-
         <nav>
           <button title="Profile">👤</button>
           <button title="Home">🏠</button>
@@ -241,302 +185,186 @@ export default function CadetRecords() {
           <button title="History">🕒</button>
           <button title="Help">❔</button>
         </nav>
-
       </aside>
 
-      {/* MAIN CONTENT */}
       <main className="records-main">
+        <h1>CADET RECORD &amp; TRACKING</h1>
 
-        <h1>CADET RECORD & TRACKING</h1>
+        {cadetsError && <p className="error" role="alert">{cadetsError}</p>}
+        {recordsError && <p className="error" role="alert">{recordsError}</p>}
+        {message && <p className="records-message" role="status">{message}</p>}
 
         <div className="records-content">
-
-          {/* CADET PROFILE SECTION */}
           <section className="records-cadet-section">
-
-            <div className="records-avatar">
-              👤
-            </div>
-
+            <div className="records-avatar">👤</div>
             {selectedCadet && (
-              <h3>
-                {selectedCadet.last_name}, {selectedCadet.first_name}
-              </h3>
+              <h3>{selectedCadet.last_name}, {selectedCadet.first_name}</h3>
             )}
 
-            {isInstructor && (
+            {canEdit && (
               <select
+                aria-label="Select cadet"
                 value={selectedID ?? ""}
                 onChange={(e) => selectCadet(e.target.value)}
+                disabled={cadetsLoading || cadets.length === 0 || isEditing}
               >
-                <option value="" disabled>
-                  Select Cadet
-                </option>
-
-                {cadets.map((cadet) => (
-                  <option
-                    key={cadet.cadetID}
-                    value={cadet.cadetID}
-                  >
+                {cadets.length === 0 ? (
+                  <option value="">No cadets found</option>
+                ) : cadets.map((cadet) => (
+                  <option key={cadet.cadetID} value={cadet.cadetID}>
                     {cadet.last_name}, {cadet.first_name}
                   </option>
                 ))}
               </select>
             )}
 
-            {/* INSTRUCTOR CONTROLS */}
-            {isInstructor && (
+            {canEdit && (
               <div className="records-actions">
-
-                <button
-                  onClick={handleAdd}
-                  disabled={!selectedCadet || isEditing}
-                >
-                  Add Info
-                </button>
-
-                <button
-                  onClick={handleUpdate}
-                  disabled={!selectedCadet || isEditing}
-                >
-                  Update Info
-                </button>
-
-                <button
-                  onClick={handleDelete}
-                  disabled={!selectedCadet || isEditing}
-                >
-                  Delete Info
-                </button>
-
-                {isEditing && (
+                {mode === "view" ? (
                   <button
-                    className="records-save-button"
-                    onClick={handleSave}
+                    onClick={handleUpdate}
+                    disabled={!records || recordsLoading}
                   >
-                    SAVE
+                    Update Info
                   </button>
+                ) : (
+                  <>
+                    <button
+                      className="records-save-button"
+                      onClick={handleSave}
+                      disabled={saving}
+                    >
+                      {saving ? "SAVING..." : "SAVE"}
+                    </button>
+                    <button
+                      className="records-cancel-button"
+                      onClick={cancelEdit}
+                      disabled={saving}
+                    >
+                      CANCEL
+                    </button>
+                  </>
                 )}
-
-                {isEditing && (
-                  <button
-                    className="records-cancel-button"
-                    onClick={() => setMode("view")}
-                  >
-                    CANCEL
-                  </button>
-                )}
-
               </div>
             )}
-
           </section>
 
-          {!selectedCadet ? (
-
-            <div className="records-empty">
-              No cadet records available.
-            </div>
-
+          {cadetsLoading || recordsLoading ? (
+            <div className="records-empty">Loading cadet records...</div>
+          ) : !selectedCadet || !records ? (
+            <div className="records-empty">No cadet records available.</div>
           ) : (
-
             <>
-
-              {/* FITNESS SCORES */}
               <section className="records-card fitness-card">
-
                 <h2>FITNESS SCORES</h2>
-
                 <div className="records-table">
-
-                  <div className="records-row">
-                    <span>Sit-Ups</span>
-
-                    {isEditing ? (
-                      <input
-                        type="number"
-                        min="0"
-                        name="sitUps"
-                        value={formData.fitness.sitUps}
-                        onChange={handleFitnessChange}
-                      />
-                    ) : (
-                      <span>
-                        {selectedCadet.fitness.sitUps || "—"}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="records-row">
-                    <span>Push-Ups</span>
-
-                    {isEditing ? (
-                      <input
-                        type="number"
-                        min="0"
-                        name="pushUps"
-                        value={formData.fitness.pushUps}
-                        onChange={handleFitnessChange}
-                      />
-                    ) : (
-                      <span>
-                        {selectedCadet.fitness.pushUps || "—"}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="records-row">
-                    <span>Mile Time</span>
-
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        name="mileTime"
-                        placeholder="MM:SS"
-                        value={formData.fitness.mileTime}
-                        onChange={handleFitnessChange}
-                      />
-                    ) : (
-                      <span>
-                        {selectedCadet.fitness.mileTime || "—"}
-                      </span>
-                    )}
-                  </div>
-
+                  {[
+                    ["Sit-Ups", "sitUps"],
+                    ["Push-Ups", "pushUps"],
+                    ["Mile Time", "mileTime"],
+                  ].map(([label, name]) => (
+                    <div className="records-row" key={name}>
+                      <span>{label}</span>
+                      {isEditing ? (
+                        <input
+                          type={name === "mileTime" ? "text" : "number"}
+                          min={name === "mileTime" ? undefined : "0"}
+                          name={name}
+                          value={formData.fitness[name]}
+                          onChange={(e) => setFormData((previous) => ({
+                            ...previous,
+                            fitness: { ...previous.fitness, [name]: e.target.value },
+                          }))}
+                          placeholder={name === "mileTime" ? "MM:SS" : ""}
+                        />
+                      ) : (
+                        <span>{currentRecords.fitness[name] || "—"}</span>
+                      )}
+                    </div>
+                  ))}
                 </div>
-
               </section>
 
-              {/* EVENTS AND SERVICE HOURS */}
               <section className="records-card events-card">
-
-                <h2>EVENTS & SERVICE HOURS</h2>
-
+                <h2>EVENTS &amp; SERVICE HOURS</h2>
                 <div className="records-table events-table">
-
                   <div className="records-row records-header-row">
                     <span>Event</span>
                     <span>Hours</span>
                   </div>
-
                   {isEditing ? (
-
                     <textarea
                       name="eventsText"
                       value={formData.eventsText}
-                      onChange={handleChange}
-                      placeholder={
-                        "Enter each event on a new line:\nEvent Name | Hours"
-                      }
+                      onChange={(e) => setFormData((previous) => ({
+                        ...previous, eventsText: e.target.value,
+                      }))}
+                      placeholder={"Enter each event on a new line:\nEvent Name | Hours"}
                     />
-
-                  ) : selectedCadet.events?.length > 0 ? (
-
-                    selectedCadet.events.map((event, index) => (
-                      <div
-                        className="records-row"
-                        key={index}
-                      >
+                  ) : currentRecords.events.length > 0 ? (
+                    currentRecords.events.map((event) => (
+                      <div className="records-row" key={event.servicehoursID}>
                         <span>{event.event}</span>
                         <span>{event.hours}</span>
                       </div>
                     ))
-
                   ) : (
-                    <p className="records-no-data">
-                      No events recorded.
-                    </p>
+                    <p className="records-no-data">No events recorded.</p>
                   )}
-
                 </div>
-
-                {isEditing && (
-                  <small>
-                    Format: Event Name | Hours (one per line)
-                  </small>
-                )}
-
+                {isEditing && <small>Format: Event Name | Hours (one per line)</small>}
               </section>
 
-              {/* AWARDS AND PROMOTIONS */}
               <section className="records-card awards-card">
-
-                <h2>AWARDS & PROMOTIONS</h2>
-
+                <h2>AWARDS &amp; PROMOTIONS</h2>
                 <div className="records-award-section">
-
                   <h3>Promotions</h3>
-
                   {isEditing ? (
-
                     <textarea
                       name="promotionsText"
                       value={formData.promotionsText}
-                      onChange={handleChange}
-                      placeholder="Enter each promotion on a new line"
+                      onChange={(e) => setFormData((previous) => ({
+                        ...previous, promotionsText: e.target.value,
+                      }))}
+                      placeholder="Enter each promotion rank on a new line"
                     />
-
-                  ) : selectedCadet.promotions?.length > 0 ? (
-
-                    selectedCadet.promotions.map((promotion, index) => (
-                      <div
-                        className="records-award-item"
-                        key={index}
-                      >
-                        {promotion}
+                  ) : currentRecords.promotions.length > 0 ? (
+                    currentRecords.promotions.map((promotion) => (
+                      <div className="records-award-item" key={promotion.promotionID}>
+                        {promotion.rank}
                       </div>
                     ))
-
                   ) : (
-                    <div className="records-award-item">
-                      No promotions recorded.
-                    </div>
+                    <div className="records-award-item">No promotions recorded.</div>
                   )}
-
                 </div>
 
                 <div className="records-award-section">
-
                   <h3>Awards</h3>
-
                   {isEditing ? (
-
                     <textarea
                       name="awardsText"
                       value={formData.awardsText}
-                      onChange={handleChange}
-                      placeholder="Enter each award on a new line"
+                      onChange={(e) => setFormData((previous) => ({
+                        ...previous, awardsText: e.target.value,
+                      }))}
+                      placeholder="Enter each award on a new line; use Name | Description"
                     />
-
-                  ) : selectedCadet.awards?.length > 0 ? (
-
-                    selectedCadet.awards.map((award, index) => (
-                      <div
-                        className="records-award-item"
-                        key={index}
-                      >
-                        {award}
+                  ) : currentRecords.awards.length > 0 ? (
+                    currentRecords.awards.map((award) => (
+                      <div className="records-award-item" key={award.awardID}>
+                        {award.name}{award.description ? ` — ${award.description}` : ""}
                       </div>
                     ))
-
                   ) : (
-                    <div className="records-award-item">
-                      No awards recorded.
-                    </div>
+                    <div className="records-award-item">No awards recorded.</div>
                   )}
-
                 </div>
-
               </section>
-
             </>
-
           )}
-
         </div>
-
       </main>
-
     </div>
   );
 }
